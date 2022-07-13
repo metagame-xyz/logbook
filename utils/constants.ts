@@ -30,6 +30,7 @@ export const ALCHEMY_PROJECT_ID = process.env.NEXT_PUBLIC_ALCHEMY_PROJECT_ID
 export const WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL
 export const networkStrings = getNetworkString(NETWORK)
 export const THE_METAGAME_ETH_ADDRESS = '0x902A37155438982884ca26A5DBccf73f5ae8194b'
+export const VALIDATOR_PRIVATE_KEY = process.env.NEXT_PUBLIC_VALIDATOR_PRIVATE_KEY
 
 /* Events */
 export const connect_button_clicked = 'Connect Button Clicked'

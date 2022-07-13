@@ -1,20 +1,22 @@
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { AccordionButton, Box, Button, Heading, Link, SimpleGrid, Text, VStack } from '@chakra-ui/react'
 import { parseEther } from '@ethersproject/units'
-import { BigNumber, Contract } from 'ethers'
+import { BigNumber, Contract, ethers, Wallet } from 'ethers'
 import { addressToNameObject } from 'onoma'
 import { useAccount } from 'wagmi'
 
-import { ALCHEMY_PROJECT_ID, blackholeAddress, CONTRACT_ADDRESS, METABOT_API_URL, networkStrings, WEBSITE_URL } from 'utils/constants'
+import { ALCHEMY_PROJECT_ID, blackholeAddress, CONTRACT_ADDRESS, METABOT_API_URL, networkStrings, VALIDATOR_PRIVATE_KEY, WEBSITE_URL } from 'utils/constants'
 import { copy } from 'utils/content'
 import { debug, event } from 'utils/frontend'
 import { Metadata } from 'utils/metadata'
 
 import { maxW } from 'components/Layout'
 import { fetcher } from 'utils/frontend'
+import testSignAbi from 'utils/signTestAbi'
 
 function About({ heading, text }) {
     return (
@@ -36,28 +38,120 @@ function Home({ metadata }) {
     const [{ data: account, error, loading }] = useAccount({ 
         fetchEns: true, 
     })
-    const [isWhitelisted, setWhitelisted] = useState(false);
-    const [whitelistLoading, setWhitelistLoading] = useState(true)
+    const [isWhitelisted, setWhitelisted] = useState(false)
+    const [whitelistLoading, setWhitelistLoading] = useState(false)
+    const [expandedSignature, setExpandedSignature] = useState()
 
     useEffect(() => {
-        if (account) {
-            const data = 
+
+        if (account && !whitelistLoading) {
+            setWhitelistLoading(true)
             console.log('calling', account.address);
-            const body = JSON.stringify(data)
-            fetcher(`${METABOT_API_URL}premintCheck?` + new URLSearchParams({ address: account.address }), { 
-                headers: { 'Content-Type': 'application/json' },
-                mode: 'no-cors'
+            const response = axios.get(`${METABOT_API_URL}premintCheck?` + new URLSearchParams({ address: account.address }), { 
+                headers: { 
+                    'content-type': 'application/json',
+                },
             })
+                .then((resp) => {
+                    console.log(resp.data)
+                    setExpandedSignature(resp.data)
+                    setWhitelisted(true)
+                    setWhitelistLoading(false)
+                })
+                .catch((err) => {
+                    console.log('WHITELIST ERR', err)
+                    setWhitelistLoading(false)
+                })
+        }
+    }, [account && account.address])
+
+    const createToken = () => {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner()
+        const contract = new ethers.Contract("0x6eafa48d9c01713cbc11f87026288fbc85e9c51d", testSignAbi, provider)
+        const contractWithSigner = contract.connect(signer)
+        contractWithSigner.create(
+            "https://ipfs.io/ipfs/bafybeibnsoufr2renqzsh347nrx54wcubt5lgkeivez63xvivplfwhtpym/metadata.json", 
+            0,
+            {
+                gasLimit: 2100000,
+                gasPrice: 8000000000,
+            }
+        )
             .then((resp) => {
-                setWhitelisted(true)
-                setWhitelistLoading(false)
+                console.log('create', resp)
             })
             .catch((err) => {
-                console.log('WHITELIST ERR', err)
-                setWhitelistLoading(false)
+                console.log('create err', err)
             })
-        }
-    }, [account])
+    }
+
+    const checkSignature = async () => {
+        let payload = ethers.utils.defaultAbiCoder.encode(["address"], [account.address]);
+        console.log("Payload:", payload);
+
+        let payloadHash = ethers.utils.keccak256(payload);
+        console.log("PayloadHash:", payloadHash);
+
+        // See the note in the Solidity; basically this would save 6 gas and
+        // can potentially add security vulnerabilities in the future
+        // let payloadHash = ethers.utils.solidityKeccak256([ "bytes32", "string" ], [ someHash, someDescr ]);
+
+        // This adds the message prefix
+        // const wallet = new Wallet(VALIDATOR_PRIVATE_KEY, null)
+        // let signature = await wallet.signMessage(ethers.utils.arrayify(payloadHash));
+        // let sig = ethers.utils.splitSignature(signature);
+        // console.log("Signature:", sig);
+
+        console.log("Recovered:", ethers.utils.verifyMessage(ethers.utils.arrayify(payloadHash), expandedSignature));
+    }
+
+    const setValidSigner = () => {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner()
+        const contract = new ethers.Contract("0x6eafa48d9c01713cbc11f87026288fbc85e9c51d", testSignAbi, provider)
+        const contractWithSigner = contract.connect(signer)
+        contractWithSigner.setValidSigner(
+            "0x3EDfd44082A87CF1b4cbB68D6Cf61F0A40d0b68f", 
+            true,
+            {
+                gasLimit: 2100000,
+                gasPrice: 8000000000,
+            }
+        )
+            .then((resp) => {
+                console.log('set signer', resp)
+            })
+            .catch((err) => {
+                console.log('set signer err', err)
+            })
+    }
+
+    const mint = () => {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner()
+        const contract = new ethers.Contract("0x6eafa48d9c01713cbc11f87026288fbc85e9c51d", testSignAbi, provider)
+        const contractWithSigner = contract.connect(signer)
+        console.log(expandedSignature)
+        console.log(account.address)
+        contractWithSigner.callStatic.mintWithSignature(
+            expandedSignature.v, 
+            expandedSignature.r, 
+            expandedSignature.s, 
+            account.address, 
+            1, 
+            {
+                gasLimit: 2100000,
+                gasPrice: 8000000000,
+            }
+        )
+            .then((resp) => {
+                console.log(resp)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
 
 
     // const contract = new Contract(CONTRACT_ADDRESS, heartbeat.abi, provider);
@@ -200,7 +294,7 @@ function Home({ metadata }) {
                 <Text fontSize={[16, 22, 30]} fontWeight="light" maxW={['container.md']} pb={4}>
                     {(!whitelistLoading && account) ? (
                         <>
-                        {isWhitelisted ? "Mint" : "Not whitelisted" }
+                        {isWhitelisted ? "Whitelistedddd" : "Not whitelisted" }
                         </>
                     ) : null}
                 </Text>
@@ -219,6 +313,70 @@ function Home({ metadata }) {
                     <About heading={copy.heading3} text={copy.text3} />
                 </SimpleGrid>
             </Box>
+            <Button
+                onClick={mint}
+                loadingText="Minting..."
+                fontWeight="normal"
+                colorScheme="brand"
+                bgColor="brand.600"
+                // color="brand.900"
+                _hover={{ bg: 'brand.500' }}
+                size="lg"
+                height="60px"
+                minW="xs"
+                boxShadow="lg"
+                fontSize="4xl"
+                borderRadius="full">
+                Mint
+            </Button>
+            <Button
+                onClick={createToken}
+                loadingText="Minting..."
+                fontWeight="normal"
+                colorScheme="brand"
+                bgColor="brand.600"
+                // color="brand.900"
+                _hover={{ bg: 'brand.500' }}
+                size="lg"
+                height="60px"
+                minW="xs"
+                boxShadow="lg"
+                fontSize="4xl"
+                borderRadius="full">
+                Create Token
+            </Button>
+            <Button
+                onClick={setValidSigner}
+                loadingText="Minting..."
+                fontWeight="normal"
+                colorScheme="brand"
+                bgColor="brand.600"
+                // color="brand.900"
+                _hover={{ bg: 'brand.500' }}
+                size="lg"
+                height="60px"
+                minW="xs"
+                boxShadow="lg"
+                fontSize="4xl"
+                borderRadius="full">
+                Set signer
+            </Button>
+            <Button
+                onClick={checkSignature}
+                loadingText="Minting..."
+                fontWeight="normal"
+                colorScheme="brand"
+                bgColor="brand.600"
+                // color="brand.900"
+                _hover={{ bg: 'brand.500' }}
+                size="lg"
+                height="60px"
+                minW="xs"
+                boxShadow="lg"
+                fontSize="4xl"
+                borderRadius="full">
+                Check signature
+            </Button>
 
             {/* <VStack justifyContent="center" spacing={4} px={4} py={8} bgColor="brand.700">
                 {!minted && !userTokenId ? (

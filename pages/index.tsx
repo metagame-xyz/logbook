@@ -87,21 +87,28 @@ function Home({ metadata }) {
     }
 
     const checkSignature = async () => {
-        let payload = ethers.utils.defaultAbiCoder.encode(["address"], [account.address]);
-        console.log("Payload:", payload);
+        const DOMAIN_SEPARATOR = ethers.utils.keccak256(
+            ethers.utils.defaultAbiCoder.encode(
+                [
+                    "bytes32",
+                    "bytes32",
+                    "bytes32",
+                    "uint256",
+                    "address"
+                ],
+                [
+                    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)")),
+                    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("Metagame")),
+                    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("1")),
+                    4,
+                    "0x6eafa48d9c01713cbc11f87026288fbc85e9c51d"
+                ]
+            )
+        )
 
-        let payloadHash = ethers.utils.keccak256(payload);
-        console.log("PayloadHash:", payloadHash);
-
-        // See the note in the Solidity; basically this would save 6 gas and
-        // can potentially add security vulnerabilities in the future
-        // let payloadHash = ethers.utils.solidityKeccak256([ "bytes32", "string" ], [ someHash, someDescr ]);
-
-        // This adds the message prefix
-        // const wallet = new Wallet(VALIDATOR_PRIVATE_KEY, null)
-        // let signature = await wallet.signMessage(ethers.utils.arrayify(payloadHash));
-        // let sig = ethers.utils.splitSignature(signature);
-        // console.log("Signature:", sig);
+        const payload = ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode([ "bytes32", "address", "uint256" ], [ ethers.utils.keccak256(ethers.utils.toUtf8Bytes("Mint(address minter,uint256 tokenId)")), account.address, 1 ]))
+  
+        const payloadHash = ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(["string", "bytes32", "bytes32"], ["\x19\x01", DOMAIN_SEPARATOR, payload]))
 
         console.log("Recovered:", ethers.utils.verifyMessage(ethers.utils.arrayify(payloadHash), expandedSignature));
     }

@@ -65,6 +65,20 @@ function Home({ metadata }) {
         }
     }, [account && account.address])
 
+    const testSign = async () => {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner()
+        const contract = new ethers.Contract("0x019c1e68fc6c3d0a6ee0c1852d0a80d14b53abf1", testSignAbi, provider)
+        const contractWithSigner = contract.connect(signer)
+
+        let tx = await contractWithSigner.registerOnBehalfOf(account.address, expandedSignature.v, expandedSignature.r, expandedSignature.s, {
+            gasLimit: 2100000,
+            gasPrice: 8000000000,
+        });
+        console.log("Transaction:", tx.hash);
+        
+    }
+
     const createToken = () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner()
@@ -106,9 +120,8 @@ function Home({ metadata }) {
             )
         )
 
-        const payload = ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode([ "bytes32", "address", "uint256" ], [ ethers.utils.keccak256(ethers.utils.toUtf8Bytes("Mint(address minter,uint256 tokenId)")), account.address, 1 ]))
-  
-        const payloadHash = ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(["string", "bytes32", "bytes32"], ["\x19\x01", DOMAIN_SEPARATOR, payload]))
+        const payload = ethers.utils.defaultAbiCoder.encode([ "bytes32", "address", "uint256" ], [ ethers.utils.keccak256(ethers.utils.toUtf8Bytes("Mint(address minter,uint256 tokenId)")), account.address, 1 ])
+        const payloadHash = ethers.utils.keccak256(payload)
 
         console.log("Recovered:", ethers.utils.verifyMessage(ethers.utils.arrayify(payloadHash), expandedSignature));
     }
@@ -383,6 +396,22 @@ function Home({ metadata }) {
                 fontSize="4xl"
                 borderRadius="full">
                 Check signature
+            </Button>
+            <Button
+                onClick={testSign}
+                loadingText="Minting..."
+                fontWeight="normal"
+                colorScheme="brand"
+                bgColor="brand.600"
+                // color="brand.900"
+                _hover={{ bg: 'brand.500' }}
+                size="lg"
+                height="60px"
+                minW="xs"
+                boxShadow="lg"
+                fontSize="4xl"
+                borderRadius="full">
+                Test sign
             </Button>
 
             {/* <VStack justifyContent="center" spacing={4} px={4} py={8} bgColor="brand.700">

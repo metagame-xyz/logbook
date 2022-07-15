@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 import mongoose, { createConnection } from 'mongoose'
 
 import { LOGBOOK_DB_CONNECTION_STRING } from 'utils/constants'
 
 import { NftMetadata, NftMetadataSchema  } from './models'
+=======
+import { createConnection } from 'mongoose'
+
+import { LOGBOOK_DB_CONNECTION_STRING } from 'utils/constants'
+
+import { NftMetadata } from './models'
+>>>>>>> 7027d57 (logbook and metabot dbs)
 
 /**
  * Global is used here to maintain a cached connection across hot reloads
@@ -53,9 +61,8 @@ export class LogbookMongoose {
         await this.connect()
         try {
             const { address } = nftMetadata
-            const existingData = await cached.conn.models.NftMetadata.findOne({ address })
 
-            debugger
+            const existingData = await cached.conn.models.NftMetadata.findOne({ address })
 
             if (existingData?.tokenId) {
                 nftMetadata.tokenId = existingData.tokenId
@@ -84,8 +91,6 @@ export class LogbookMongoose {
             console.error('mongoose addOrUpdateNftMetadata error', err)
         }
     }
-
-    
 }
 
 export default new LogbookMongoose()

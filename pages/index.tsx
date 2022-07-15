@@ -19,6 +19,7 @@ import {
 } from 'utils/constants'
 import { copy } from 'utils/content'
 import { debug, event } from 'utils/frontend'
+import { fetcher } from 'utils/frontend'
 import { Metadata } from 'utils/metadata'
 import { maxW } from 'components/Layout'
 import { fetcher } from 'utils/frontend'

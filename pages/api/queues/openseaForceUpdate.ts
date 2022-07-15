@@ -16,9 +16,9 @@ const attemptToDelay =
         : [null, '10s']
 
 const OpenseaForceUpdate = Queue(
-    'api/v1/queues/openseaForceUpdate', // 👈 the route it's reachable on
+    'api/queues/openseaForceUpdate', // 👈 the route it's reachable on
     async (job: Job) => {
-        let { tokenId, attempt, newImageUrl } = job
+        const { tokenId, attempt, newImageUrl } = job
 
         let totalAttempts = attempt
         const newImageCID = ipfsUrlToCIDString(newImageUrl)

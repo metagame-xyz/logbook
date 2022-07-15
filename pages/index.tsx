@@ -9,11 +9,17 @@ import { BigNumber, Contract, ethers, Wallet } from 'ethers'
 import { addressToNameObject } from 'onoma'
 import { useAccount } from 'wagmi'
 
-import { ALCHEMY_PROJECT_ID, blackholeAddress, CONTRACT_ADDRESS, METABOT_API_URL, networkStrings, VALIDATOR_PRIVATE_KEY, WEBSITE_URL } from 'utils/constants'
+import {
+    ALCHEMY_PROJECT_ID,
+    blackholeAddress,
+    CONTRACT_ADDRESS,
+    METABOT_API_URL,
+    networkStrings,
+    WEBSITE_URL,
+} from 'utils/constants'
 import { copy } from 'utils/content'
 import { debug, event } from 'utils/frontend'
 import { Metadata } from 'utils/metadata'
-
 import { maxW } from 'components/Layout'
 import { fetcher } from 'utils/frontend'
 import logbookAbi from 'utils/logbookAbi'
@@ -37,8 +43,8 @@ function heartbeatShowerLink(tokenId: number): string {
 
 function Home({ metadata }) {
     // const { provider, signer, userAddress, userName, eventParams, openWeb3Modal, toast } = useEthereum();
-    const [{ data: account, error, loading }] = useAccount({ 
-        fetchEns: true, 
+    const [{ data: account, error, loading }] = useAccount({
+        fetchEns: true,
     })
     const [isWhitelisted, setWhitelisted] = useState(false)
     const [whitelistLoading, setWhitelistLoading] = useState(false)
@@ -175,7 +181,6 @@ function Home({ metadata }) {
                 console.log(err)
             })
     }
-
 
     // const contract = new Contract(CONTRACT_ADDRESS, heartbeat.abi, provider);
 

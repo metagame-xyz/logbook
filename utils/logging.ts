@@ -1,5 +1,6 @@
 import DatadogWinston from 'datadog-winston'
 import winston, { format } from 'winston'
+
 import { DATADOG_API_KEY, METABOT_API_URL } from './constants'
 
 const { combine, printf, colorize, errors } = format
@@ -26,7 +27,7 @@ const prodFormat = printf(
 )
 const localTransports = [new winston.transports.Console({ level: 'debug' })]
 
-const service = process.env.VERCEL_ENV === 'production' ? 'heartbeat-logger' : 'heartbeat-dev-logger'
+const service = process.env.VERCEL_ENV === 'production' ? 'logbook-logger' : 'logbook-dev-logger'
 
 const datadogTransport = new DatadogWinston({
     apiKey: DATADOG_API_KEY,

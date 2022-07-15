@@ -13,13 +13,13 @@ export function getTruncatedAddress(address: string): string {
     return address
 }
 
-export function debug(varObj: object): void {
+export function debug(varObj: Record<string, any>): void {
     Object.keys(varObj).forEach((str) => {
         console.log(`${str}:`, varObj[str])
     })
 }
 
-export const event = (action: string, params?: Object) => {
+export const event = (action: string, params?: Record<string, any>) => {
     // window.gtag('event', action, params);
 }
 
@@ -137,7 +137,7 @@ export async function updateImage(
         secondsElapsed,
     }
     const options = updateImageFetchOptions(EVENT_FORWARDER_AUTH_TOKEN, body)
-    const url = `https://${WEBSITE_URL}/api/v1/updateImage`
+    const url = `https://${WEBSITE_URL}/api/updateImage`
     const response = await fetcher(url, options)
     return response
 }

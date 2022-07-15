@@ -73,7 +73,9 @@ function Home({ metadata }) {
         }
     }, [account && account.address])
 
-    const testSign = async () => {
+
+
+    const mint = async () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner()
         const contract = new ethers.Contract(LOGBOOK_CONTRACT_ADDRESS, logbookAbi, provider)
@@ -85,101 +87,6 @@ function Home({ metadata }) {
             value: ethers.utils.parseEther("0.01")
         });
         console.log("Transaction:", tx.hash);
-        
-    }
-
-    const createToken = () => {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner()
-        const contract = new ethers.Contract("0xa01769a4887f78969ecfcdcd428b72545e787b88", testSignAbi, provider)
-        const contractWithSigner = contract.connect(signer)
-        contractWithSigner.create(
-            "https://ipfs.io/ipfs/bafybeibnsoufr2renqzsh347nrx54wcubt5lgkeivez63xvivplfwhtpym/metadata.json", 
-            0,
-            {
-                gasLimit: 2100000,
-                gasPrice: 8000000000,
-            }
-        )
-            .then((resp) => {
-                console.log('create', resp)
-            })
-            .catch((err) => {
-                console.log('create err', err)
-            })
-    }
-
-    const checkSignature = async () => {
-        const DOMAIN_SEPARATOR = ethers.utils.keccak256(
-            ethers.utils.defaultAbiCoder.encode(
-                [
-                    "bytes32",
-                    "bytes32",
-                    "bytes32",
-                    "uint256",
-                    "address"
-                ],
-                [
-                    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)")),
-                    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("Metagame")),
-                    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("1")),
-                    4,
-                    "0x6eafa48d9c01713cbc11f87026288fbc85e9c51d"
-                ]
-            )
-        )
-
-        const payload = ethers.utils.defaultAbiCoder.encode([ "bytes32", "address", "uint256" ], [ ethers.utils.keccak256(ethers.utils.toUtf8Bytes("Mint(address minter,uint256 tokenId)")), account.address, 1 ])
-        const payloadHash = ethers.utils.keccak256(payload)
-
-        console.log("Recovered:", ethers.utils.verifyMessage(ethers.utils.arrayify(payloadHash), expandedSignature));
-    }
-
-    const setValidSigner = () => {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner()
-        const contract = new ethers.Contract("0x6eafa48d9c01713cbc11f87026288fbc85e9c51d", testSignAbi, provider)
-        const contractWithSigner = contract.connect(signer)
-        contractWithSigner.setValidSigner(
-            "0x3EDfd44082A87CF1b4cbB68D6Cf61F0A40d0b68f", 
-            true,
-            {
-                gasLimit: 2100000,
-                gasPrice: 8000000000,
-            }
-        )
-            .then((resp) => {
-                console.log('set signer', resp)
-            })
-            .catch((err) => {
-                console.log('set signer err', err)
-            })
-    }
-
-    const mint = () => {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner()
-        const contract = new ethers.Contract("0x6eafa48d9c01713cbc11f87026288fbc85e9c51d", testSignAbi, provider)
-        const contractWithSigner = contract.connect(signer)
-        console.log(expandedSignature)
-        console.log(account.address)
-        contractWithSigner.callStatic.mintWithSignature(
-            expandedSignature.v, 
-            expandedSignature.r, 
-            expandedSignature.s, 
-            account.address, 
-            1, 
-            {
-                gasLimit: 2100000,
-                gasPrice: 8000000000,
-            }
-        )
-            .then((resp) => {
-                console.log(resp)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
     }
 
     // const contract = new Contract(CONTRACT_ADDRESS, heartbeat.abi, provider);
@@ -356,70 +263,6 @@ function Home({ metadata }) {
                 fontSize="4xl"
                 borderRadius="full">
                 Mint
-            </Button>
-            <Button
-                onClick={createToken}
-                loadingText="Minting..."
-                fontWeight="normal"
-                colorScheme="brand"
-                bgColor="brand.600"
-                // color="brand.900"
-                _hover={{ bg: 'brand.500' }}
-                size="lg"
-                height="60px"
-                minW="xs"
-                boxShadow="lg"
-                fontSize="4xl"
-                borderRadius="full">
-                Create Token
-            </Button>
-            <Button
-                onClick={setValidSigner}
-                loadingText="Minting..."
-                fontWeight="normal"
-                colorScheme="brand"
-                bgColor="brand.600"
-                // color="brand.900"
-                _hover={{ bg: 'brand.500' }}
-                size="lg"
-                height="60px"
-                minW="xs"
-                boxShadow="lg"
-                fontSize="4xl"
-                borderRadius="full">
-                Set signer
-            </Button>
-            <Button
-                onClick={checkSignature}
-                loadingText="Minting..."
-                fontWeight="normal"
-                colorScheme="brand"
-                bgColor="brand.600"
-                // color="brand.900"
-                _hover={{ bg: 'brand.500' }}
-                size="lg"
-                height="60px"
-                minW="xs"
-                boxShadow="lg"
-                fontSize="4xl"
-                borderRadius="full">
-                Check signature
-            </Button>
-            <Button
-                onClick={testSign}
-                loadingText="Minting..."
-                fontWeight="normal"
-                colorScheme="brand"
-                bgColor="brand.600"
-                // color="brand.900"
-                _hover={{ bg: 'brand.500' }}
-                size="lg"
-                height="60px"
-                minW="xs"
-                boxShadow="lg"
-                fontSize="4xl"
-                borderRadius="full">
-                Test sign
             </Button>
 
             {/* <VStack justifyContent="center" spacing={4} px={4} py={8} bgColor="brand.700">

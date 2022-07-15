@@ -1,8 +1,8 @@
-import { createConnection } from 'mongoose'
+import mongoose, { createConnection } from 'mongoose'
 
 import { LOGBOOK_DB_CONNECTION_STRING } from 'utils/constants'
 
-import { NftMetadata } from './models'
+import { NftMetadata, NftMetadataSchema  } from './models'
 
 /**
  * Global is used here to maintain a cached connection across hot reloads
@@ -38,7 +38,7 @@ export class LogbookMongoose {
                 })
         }
         cached.conn = await cached.promise
-        // this.NftMetadataModel = cached.conn.model('NftMetadata', NftMetadataSchema)
+        cached.conn.model('NftMetadata', NftMetadataSchema)
         this.connected = true
         return cached.conn
     }
@@ -53,7 +53,6 @@ export class LogbookMongoose {
         await this.connect()
         try {
             const { address } = nftMetadata
-
             const existingData = await cached.conn.models.NftMetadata.findOne({ address })
 
             if (existingData?.tokenId) {
@@ -66,20 +65,25 @@ export class LogbookMongoose {
         }
     }
 
-    async addTokenIdToMetadata(nftMetadata: NftMetadata, tokenId: number): Promise<void> {
+    async addTokenIdForAddress(address: string, tokenId: number): Promise<void> {
         await this.connect()
         try {
-            const { address } = nftMetadata
-
+            console.log('address', address, tokenId)
             const data = await cached.conn.models.NftMetadata.findOne({ address })
 
-            data.tokenId = tokenId
+            console.log(data)
+            let count = await cached.conn.models.NftMetadata.countDocuments()
+            console.log(count)
 
-            await cached.conn.models.NftMetadata.findOneAndUpdate({ address }, data, { upsert: true })
+            await cached.conn.models.NftMetadata.findOneAndUpdate({ address }, { tokenId }, { upsert: true })
+            count = await cached.conn.models.NftMetadata.countDocuments()
+            console.log(count)
         } catch (err) {
             console.error('mongoose addOrUpdateNftMetadata error', err)
         }
     }
+
+    
 }
 
 export default new LogbookMongoose()

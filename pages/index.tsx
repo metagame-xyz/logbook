@@ -16,7 +16,9 @@ import { Metadata } from 'utils/metadata'
 
 import { maxW } from 'components/Layout'
 import { fetcher } from 'utils/frontend'
-import testSignAbi from 'utils/signTestAbi'
+import logbookAbi from 'utils/logbookAbi'
+
+const LOGBOOK_CONTRACT_ADDRESS = "0x536ea5d11e914bcef00889a8e790947cd8603e29"
 
 function About({ heading, text }) {
     return (
@@ -68,12 +70,13 @@ function Home({ metadata }) {
     const testSign = async () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner()
-        const contract = new ethers.Contract("0x019c1e68fc6c3d0a6ee0c1852d0a80d14b53abf1", testSignAbi, provider)
+        const contract = new ethers.Contract(LOGBOOK_CONTRACT_ADDRESS, logbookAbi, provider)
         const contractWithSigner = contract.connect(signer)
 
-        let tx = await contractWithSigner.registerOnBehalfOf(account.address, expandedSignature.v, expandedSignature.r, expandedSignature.s, {
+        let tx = await contractWithSigner.mintWithSignature(account.address, expandedSignature.v, expandedSignature.r, expandedSignature.s, {
             gasLimit: 2100000,
             gasPrice: 8000000000,
+            value: ethers.utils.parseEther("0.01")
         });
         console.log("Transaction:", tx.hash);
         
@@ -82,7 +85,7 @@ function Home({ metadata }) {
     const createToken = () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner()
-        const contract = new ethers.Contract("0x6eafa48d9c01713cbc11f87026288fbc85e9c51d", testSignAbi, provider)
+        const contract = new ethers.Contract("0xa01769a4887f78969ecfcdcd428b72545e787b88", testSignAbi, provider)
         const contractWithSigner = contract.connect(signer)
         contractWithSigner.create(
             "https://ipfs.io/ipfs/bafybeibnsoufr2renqzsh347nrx54wcubt5lgkeivez63xvivplfwhtpym/metadata.json", 

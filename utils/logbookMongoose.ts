@@ -55,6 +55,8 @@ export class LogbookMongoose {
             const { address } = nftMetadata
             const existingData = await cached.conn.models.NftMetadata.findOne({ address })
 
+            debugger
+
             if (existingData?.tokenId) {
                 nftMetadata.tokenId = existingData.tokenId
             }

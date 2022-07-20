@@ -1,10 +1,10 @@
+import axios from 'axios'
 import { createHmac } from 'crypto'
 import { IPFS } from 'ipfs-core-types'
 import { create } from 'ipfs-http-client'
 
 import { WEBSITE_URL } from './constants'
 import { TxnCounts } from './metadata'
-import axios from 'axios'
 
 export function getTruncatedAddress(address: string): string {
     if (address && address.startsWith('0x')) {
@@ -100,7 +100,7 @@ const updateImageFetchOptions = (EVENT_FORWARDER_AUTH_TOKEN: string, body: { ipf
     headers: {
         'content-type': 'application/json',
         'x-event-forwarder-signature': signMessage(body, EVENT_FORWARDER_AUTH_TOKEN),
-    }
+    },
 })
 
 export async function fetcher(url: string, options) {

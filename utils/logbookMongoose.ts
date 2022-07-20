@@ -1,16 +1,8 @@
-<<<<<<< HEAD
-import mongoose, { createConnection } from 'mongoose'
-
-import { LOGBOOK_DB_CONNECTION_STRING } from 'utils/constants'
-
-import { NftMetadata, NftMetadataSchema  } from './models'
-=======
 import { createConnection } from 'mongoose'
 
 import { LOGBOOK_DB_CONNECTION_STRING } from 'utils/constants'
 
-import { NftMetadata } from './models'
->>>>>>> 7027d57 (logbook and metabot dbs)
+import { NftMetadata, NftMetadataSchema, nftMetadataZ } from './models'
 
 /**
  * Global is used here to maintain a cached connection across hot reloads
@@ -68,7 +60,11 @@ export class LogbookMongoose {
                 nftMetadata.tokenId = existingData.tokenId
             }
 
-            await cached.conn.models.NftMetadata.findOneAndUpdate({ address }, nftMetadata, { upsert: true })
+            const { result } = await cached.conn.models.NftMetadata.findOneAndUpdate({ address }, nftMetadata, {
+                upsert: true,
+            })
+
+            console.log('result', result)
         } catch (err) {
             console.error('mongoose addOrUpdateNftMetadata error', err)
         }
@@ -89,6 +85,29 @@ export class LogbookMongoose {
             console.log(count)
         } catch (err) {
             console.error('mongoose addOrUpdateNftMetadata error', err)
+        }
+    }
+
+    async getUserForAddress(address: string): Promise<NftMetadata | null> {
+        await this.connect()
+        try {
+            const user = await cached.conn.models.NftMetadata.findOne({ address })
+
+            console.log(user)
+
+            if (!user) return null
+
+            const parsedUser = nftMetadataZ.safeParse(user.toObject())
+
+            if (!parsedUser.success) {
+                console.error('Error', parsedUser)
+                return null
+            }
+
+            return parsedUser.success ? parsedUser.data : null
+        } catch (err) {
+            console.error('mongoose getUserForAddress error', err)
+            return null
         }
     }
 }

@@ -115,58 +115,76 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
             string,
             Collection<FilteredData>
         >
-        const erc721Mints = getValues(mints).filter((tx) => tx.all()[0]?.assetReceivedType === 'ERC721')
-        const erc20Mints = getValues(mints).filter((tx) => tx.all()[0]?.assetReceivedType === 'ERC20')
-
-        const nftMintNames = erc721Mints.map((tx) => [tx.all()[0]?.contractName, tx.all()[0]?.contractAddress])
-
-        const mintCollectionSentence = `minted ${erc721Mints.length} different NFT collections`
-        const mintTokensSentence = `minted ${erc20Mints.length} different tokens`
-
         const mintSentences = []
-        if (erc721Mints.length > 0) mintSentences.push(mintCollectionSentence)
-        if (erc20Mints.length > 0) mintSentences.push(mintTokensSentence)
+        console.log('mints', mints)
+
+        let nftMintNames = []
+        if (mints && getKeys(mints).length > 0) {
+            const erc721Mints = getValues(mints).filter((tx) => tx.all()[0]?.assetReceivedType === 'ERC721')
+            const erc20Mints = getValues(mints).filter((tx) => tx.all()[0]?.assetReceivedType === 'ERC20')
+
+            nftMintNames = erc721Mints.map((tx) => [tx.all()[0]?.contractName, tx.all()[0]?.contractAddress])
+
+            const plural = erc721Mints.length > 1 ? 's' : ''
+            const plural2 = erc20Mints.length > 1 ? 's' : ''
+            const diff = erc20Mints.length > 1 ? 'different ' : ''
+
+            const mintCollectionSentence = `minted ${erc721Mints.length} NFT collection${plural}`
+            const mintTokensSentence = `minted ${erc20Mints.length} ${diff}token${plural2}`
+
+            if (erc721Mints.length > 0) mintSentences.push(mintCollectionSentence)
+            if (erc20Mints.length > 0) mintSentences.push(mintTokensSentence)
+        }
 
         // BOUGHT
         const bought = data.bought?.all() as unknown as FilteredData[]
         const boughtSentences = []
-        for (const [exchange, addresses] of getEntries(knownAddresses)) {
-            const txs = bought.filter((tx) => addresses.includes(tx.contractAddress))
-            const tokenType = txs[0]?.assetReceivedType === 'ERC20' ? 'token' : 'NFT'
-            const count = txs.length
-            const plural = count > 1 ? 's' : ''
+        if (bought?.length > 0) {
+            for (const [exchange, addresses] of getEntries(knownAddresses)) {
+                const txs = bought.filter((tx) => addresses.includes(tx.contractAddress))
+                const tokenType = txs[0]?.assetReceivedType === 'ERC20' ? 'token' : 'NFT'
+                const count = txs.length
+                const plural = count > 1 ? 's' : ''
 
-            if (count > 0) {
-                boughtSentences.push(`bought ${count} ${tokenType}${plural} on ${exchange}`)
+                if (count > 0) {
+                    boughtSentences.push(`bought ${count} ${tokenType}${plural} on ${exchange}`)
+                }
             }
         }
 
         // SOLD
         const sold = data.sold?.all() as unknown as FilteredData[]
         const soldSentences = []
-        for (const [exchange, addresses] of getEntries(knownAddresses)) {
-            const txs = sold.filter((tx) => addresses.includes(tx.contractAddress)).filter((tx) => !!tx.assetSentType)
-            const tokenType = txs[0]?.assetSentType === 'ERC20' ? 'token' : 'NFT'
-            const count = txs.length
-            const plural = count > 1 ? 's' : ''
+        if (sold?.length > 0) {
+            for (const [exchange, addresses] of getEntries(knownAddresses)) {
+                const txs = sold
+                    .filter((tx) => addresses.includes(tx.contractAddress))
+                    .filter((tx) => !!tx.assetSentType)
+                const tokenType = txs[0]?.assetSentType === 'ERC20' ? 'token' : 'NFT'
+                const count = txs.length
+                const plural = count > 1 ? 's' : ''
 
-            if (count > 0) {
-                soldSentences.push(`sold ${count} ${tokenType}${plural} on ${exchange}`)
+                if (count > 0) {
+                    soldSentences.push(`sold ${count} ${tokenType}${plural} on ${exchange}`)
+                }
             }
         }
 
         // CLAIMED
         const claimed = data.claimed?.all() as unknown as FilteredData[]
         const claimedSentences = []
-        for (const [exchange, addresses] of getEntries(knownAddresses)) {
-            const txs = claimed.filter((tx) => addresses.includes(tx.contractAddress))
-            // console.log('txs', txs)
-            const tokenType = txs[0]?.assetReceivedType === 'ERC20' ? 'token' : 'NFT'
-            const count = txs.length
-            const plural = count > 1 ? 's' : ''
+        console.log('claimed', claimed)
+        if (claimed?.length > 0) {
+            for (const [exchange, addresses] of getEntries(knownAddresses)) {
+                const txs = claimed.filter((tx) => addresses.includes(tx.contractAddress))
+                // console.log('txs', txs)
+                const tokenType = txs[0]?.assetReceivedType === 'ERC20' ? 'token' : 'NFT'
+                const count = txs.length
+                const plural = count > 1 ? 's' : ''
 
-            if (count > 0) {
-                claimedSentences.push(`claimed ${tokenType}s from ${exchange}`)
+                if (count > 0) {
+                    claimedSentences.push(`claimed ${tokenType}s from ${exchange}`)
+                }
             }
         }
 
@@ -175,56 +193,69 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
             string,
             Collection<any>
         >
-        const erc721Airdrops = getValues(airdrops).filter((tx) => tx.all()[0]?.assetReceivedType === 'ERC721')
-        const erc20Airdrops = getValues(airdrops).filter((tx) => tx.all()[0]?.assetReceivedType === 'ERC20')
-
-        const airdropCollectionSentence = `got airdropped ${erc721Airdrops.length} different NFT collections`
-        const airdropTokensSentence = `got airdropped ${erc20Airdrops.length} different tokens`
-
         const airdropSentences = []
-        if (erc721Airdrops.length > 0) airdropSentences.push(airdropCollectionSentence)
-        if (erc20Airdrops.length > 0) airdropSentences.push(airdropTokensSentence)
+
+        if (airdrops && getKeys(airdrops).length > 0) {
+            const erc721Airdrops = getValues(airdrops).filter((tx) => tx.all()[0]?.assetReceivedType === 'ERC721')
+            const erc20Airdrops = getValues(airdrops).filter((tx) => tx.all()[0]?.assetReceivedType === 'ERC20')
+
+            const airdropCollectionSentence = `got airdropped ${erc721Airdrops.length} different NFT collections`
+            const airdropTokensSentence = `got airdropped ${erc20Airdrops.length} different tokens`
+
+            if (erc721Airdrops.length > 0) airdropSentences.push(airdropCollectionSentence)
+            if (erc20Airdrops.length > 0) airdropSentences.push(airdropTokensSentence)
+        }
 
         //DEPLOYED
 
+        const deployedSentences = []
+
         const deployed = data.deployed?.all() as unknown as FilteredData[]
-        const plural = deployed.length > 1 ? 's' : ''
-        const deployedSentence = `deployed ${deployed.length} contract${plural}`
-        const deployedSentences = deployed.length > 0 ? [deployedSentence] : []
+        if (deployed?.length > 0) {
+            const plural = deployed.length > 1 ? 's' : ''
+            deployedSentences.push(`deployed ${deployed.length} contract${plural}`)
+        }
 
         // CONTRIBUTED
         const contributed = data.contributed?.all() as unknown as FilteredData[]
-
         const contributedSentences = []
-        for (const [exchange, addresses] of getEntries(knownAddresses)) {
-            const txs = contributed.filter((tx) => addresses.includes(tx.contractAddress))
-            const count = txs.length
-            const plural = count > 1 ? 's' : ''
+        if (contributed?.length > 0) {
+            for (const [exchange, addresses] of getEntries(knownAddresses)) {
+                const txs = contributed.filter((tx) => addresses.includes(tx.contractAddress))
+                const count = txs.length
+                const plural = count > 1 ? 's' : ''
 
-            if (count > 0) {
-                contributedSentences.push(`contributed to ${count} project${plural} on ${exchange}`)
+                if (count > 0) {
+                    contributedSentences.push(`contributed to ${count} project${plural} on ${exchange}`)
+                }
             }
         }
 
         // swapped
         const swapped = data.swapped?.all() as unknown as FilteredData[]
         const swappedSentences = []
-        for (const [exchange, addresses] of getEntries(knownAddresses)) {
-            const txs = swapped.filter((tx) => addresses.includes(tx.contractAddress))
-            const tokenType =
-                txs[0]?.assetReceivedType === 'ERC20' || txs[0]?.assetSentType === 'ERC20' ? 'token' : 'NFT'
-            const count = txs.length
-            const plural = count > 1 ? 's' : ''
+        if (swapped?.length > 0) {
+            for (const [exchange, addresses] of getEntries(knownAddresses)) {
+                const txs = swapped.filter((tx) => addresses.includes(tx.contractAddress))
+                const tokenType =
+                    txs[0]?.assetReceivedType === 'ERC20' || txs[0]?.assetSentType === 'ERC20' ? 'token' : 'NFT'
+                const count = txs.length
+                const plural = count > 1 ? 's' : ''
 
-            if (count > 0) {
-                swappedSentences.push(`swapped ${count} ${tokenType}${plural} on ${exchange}`)
+                if (count > 0) {
+                    swappedSentences.push(`swapped ${count} ${tokenType}${plural} on ${exchange}`)
+                }
             }
         }
 
         // TODO
 
         const unknownTxs = data.______TODO______?.all() as FilteredData[]
-        const unknownSentences = [`and ${unknownTxs.length} other transactions waiting to be interpreted`]
+
+        const unknownSentences = []
+        if (unknownTxs?.length > 0) {
+            unknownSentences.push(`and ${unknownTxs.length} other transactions waiting to be interpreted`)
+        }
 
         // BURNED
         const burned = data.burned?.groupBy('assetSentType').all() as unknown as Record<
@@ -232,13 +263,15 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
             Collection<FilteredData>
         >
         const burnedSentences = []
-        for (const [assetType, txs] of getEntries(burned)) {
-            const count = txs.all().length
-            const asset = assetType === 'ERC20' ? 'token' : 'NFT'
-            const plural = count > 1 ? 's' : ''
+        if (burned && getKeys(burned).length > 0) {
+            for (const [assetType, txs] of getEntries(burned)) {
+                const count = txs.all().length
+                const asset = assetType === 'ERC20' ? 'token' : 'NFT'
+                const plural = count > 1 ? 's' : ''
 
-            if (count > 0) {
-                burnedSentences.push(`burned ${count} ${asset}${plural}`)
+                if (count > 0) {
+                    burnedSentences.push(`burned ${count} ${asset}${plural}`)
+                }
             }
         }
 
@@ -256,54 +289,10 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         const sent = data.sent?.groupBy('assetSentType').all() as unknown as Record<string, Collection<FilteredData>>
         const sentSentences = []
 
-        for (const [assetType, txs] of getEntries(sent)) {
-            const count = getKeys(txs.groupBy('contractAddress').all()).length
+        if (sent && getKeys(sent).length > 0) {
+            for (const [assetType, txs] of getEntries(sent)) {
+                const count = getKeys(txs.groupBy('contractAddress').all()).length
 
-            let asset = ''
-            let prefixIfNotPlural = ''
-            switch (assetType) {
-                case 'native':
-                    asset = 'ETH'
-                    break
-                case 'ERC20':
-                    asset = 'tokens'
-                    break
-                case 'ERC721':
-                case 'ERC1155':
-                    asset = 'NFT'
-                    prefixIfNotPlural = 'an '
-                    break
-                default:
-                    break
-            }
-            const plural = count > 1 && assetType !== 'native' && assetType !== 'ERC20' ? 's' : ''
-            prefixIfNotPlural = plural ? '' : prefixIfNotPlural
-            const plural2 = count > 1 ? 'es' : ''
-
-            if (count > 0) {
-                sentSentences.push(`sent ${prefixIfNotPlural}${asset}${plural} to ${count} address${plural2}`)
-            }
-        }
-
-        // RECEIVED
-        const specialReceived = data.received.all().filter((tx) => tx.fromName)
-        const genericReceived = data.received.all().filter((tx) => !tx.fromName)
-
-        const receivedSentences = []
-
-        const specialGroupedByFrom = collect(specialReceived).groupBy('fromName').all() as unknown as Record<
-            string,
-            Collection<FilteredData>
-        >
-
-        for (const [fromName, txs] of getEntries(specialGroupedByFrom)) {
-            const groupedByAsset = txs.groupBy('assetReceivedType').all() as unknown as Record<
-                string,
-                Collection<FilteredData>
-            >
-
-            for (const [assetType, txs] of getEntries(groupedByAsset)) {
-                const count = txs.all().length
                 let asset = ''
                 let prefixIfNotPlural = ''
                 switch (assetType) {
@@ -321,53 +310,101 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
                     default:
                         break
                 }
-
                 const plural = count > 1 && assetType !== 'native' && assetType !== 'ERC20' ? 's' : ''
                 prefixIfNotPlural = plural ? '' : prefixIfNotPlural
-                const plural2 = count > 1 ? 's' : ''
+                const plural2 = count > 1 ? 'es' : ''
 
                 if (count > 0) {
-                    receivedSentences.push(
-                        `received ${prefixIfNotPlural}${asset}${plural} from ${fromName} ${count} time${plural2}`,
-                    )
+                    sentSentences.push(`sent ${prefixIfNotPlural}${asset}${plural} to ${count} address${plural2}`)
                 }
             }
         }
 
-        const genericGroupedByAssetType = collect(genericReceived)
-            .groupBy('assetReceivedType')
-            .all() as unknown as Record<string, Collection<FilteredData>>
+        // RECEIVED
+        const specialReceived = data.received.all().filter((tx) => tx.fromName)
+        const genericReceived = data.received.all().filter((tx) => !tx.fromName)
+        const receivedSentences = []
 
-        // debugger
-        for (const [assetType, txs] of getEntries(genericGroupedByAssetType)) {
-            const count = getKeys(txs.groupBy('contractAddress').all()).length
+        if (specialReceived.length > 0) {
+            const specialGroupedByFrom = collect(specialReceived).groupBy('fromName').all() as unknown as Record<
+                string,
+                Collection<FilteredData>
+            >
 
-            let asset = ''
-            let prefixIfNotPlural = ''
-            switch (assetType) {
-                case 'native':
-                    asset = 'ETH'
-                    break
-                case 'ERC20':
-                    asset = 'tokens'
-                    break
-                case 'ERC721':
-                    asset = 'NFT'
-                    prefixIfNotPlural = 'an '
-                case 'ERC1155':
-                    asset = '1155'
-                    prefixIfNotPlural = 'an '
-                    break
-                default:
-                    break
+            for (const [fromName, txs] of getEntries(specialGroupedByFrom)) {
+                const groupedByAsset = txs.groupBy('assetReceivedType').all() as unknown as Record<
+                    string,
+                    Collection<FilteredData>
+                >
+
+                for (const [assetType, txs] of getEntries(groupedByAsset)) {
+                    const count = txs.all().length
+                    let asset = ''
+                    let prefixIfNotPlural = ''
+                    switch (assetType) {
+                        case 'native':
+                            asset = 'ETH'
+                            break
+                        case 'ERC20':
+                            asset = 'tokens'
+                            break
+                        case 'ERC721':
+                        case 'ERC1155':
+                            asset = 'NFT'
+                            prefixIfNotPlural = 'an '
+                            break
+                        default:
+                            break
+                    }
+
+                    const plural = count > 1 && assetType !== 'native' && assetType !== 'ERC20' ? 's' : ''
+                    prefixIfNotPlural = plural ? '' : prefixIfNotPlural
+                    const plural2 = count > 1 ? 's' : ''
+
+                    if (count > 0) {
+                        receivedSentences.push(
+                            `received ${prefixIfNotPlural}${asset}${plural} from ${fromName} ${count} time${plural2}`,
+                        )
+                    }
+                }
             }
+        }
 
-            const plural = count > 1 && assetType !== 'native' && assetType !== 'ERC20' ? 's' : ''
-            prefixIfNotPlural = plural ? '' : prefixIfNotPlural
-            const plural2 = count > 1 ? 'es' : ''
+        if (genericReceived.length > 0) {
+            const genericGroupedByAssetType = collect(genericReceived)
+                .groupBy('assetReceivedType')
+                .all() as unknown as Record<string, Collection<FilteredData>>
 
-            if (count > 0) {
-                sentSentences.push(`received ${prefixIfNotPlural}${asset}${plural} from ${count} address${plural2}`)
+            for (const [assetType, txs] of getEntries(genericGroupedByAssetType)) {
+                const count = getKeys(txs.groupBy('contractAddress').all()).length
+
+                let asset = ''
+                let prefixIfNotPlural = ''
+                switch (assetType) {
+                    case 'native':
+                        asset = 'ETH'
+                        break
+                    case 'ERC20':
+                        asset = 'tokens'
+                        break
+                    case 'ERC721':
+                        asset = 'NFT'
+                        prefixIfNotPlural = 'an '
+                    case 'ERC1155':
+                        asset = '1155'
+                        prefixIfNotPlural = 'an '
+                        break
+                    default:
+                        break
+                }
+
+                const plural = count > 1 && assetType !== 'native' && assetType !== 'ERC20' ? 's' : ''
+                prefixIfNotPlural = plural ? '' : prefixIfNotPlural
+                const plural2 = count > 1 ? 'es' : ''
+
+                if (count > 0) {
+                    sentSentences.push(`received ${prefixIfNotPlural}${asset}${plural} from ${count} address${plural2}`)
+                }
             }
         }
 

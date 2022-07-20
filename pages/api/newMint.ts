@@ -1,10 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { ethers, Signer, Wallet } from 'ethers'
-
 import logbookMongoose from 'utils/logbookMongoose'
+import withMiddleware from 'utils/middleware'
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         const { address, tokenId } = req.body
 
@@ -18,3 +17,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(500).json({ error: error.message })
     }
 }
+
+export default withMiddleware('eventForwarderAuth')(handler)

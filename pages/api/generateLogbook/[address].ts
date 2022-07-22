@@ -146,9 +146,8 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
             for (const [nftName, txs] of getEntries(specialMintsGrouped)) {
                 // debugger
                 const count = txs.count()
-                const plural = count > 1 ? 's' : ''
 
-                const sentence = `minted ${count} ${nftName}${plural}`
+                const sentence = `minted ${count} ${nftName}`
                 mintSentences.push(sentence)
             }
 
@@ -562,6 +561,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
             externalUrl: `https://${WEBSITE_URL}/view/${user.address}`,
             address: user.address,
             sentences,
+            lastUpdated: new Date(),
         }
 
         await logbookMongoose.connect()

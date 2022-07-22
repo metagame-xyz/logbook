@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(200).json(response)
         }
 
-        const metadata = await logbookMongoose.getUserForAddress(address)
+        const metadata = await logbookMongoose.getMetadataForAddress(address)
 
         if (!metadata) {
             response.message = 'data not yet generated for user'

@@ -10,6 +10,7 @@ export const nftMetadataZ = z.object({
     tokenId: int.optional(),
     address: AddressZ,
     sentences: string.array(),
+    lastUpdated: z.date(),
 })
 
 export type NftMetadata = z.infer<typeof nftMetadataZ>
@@ -24,4 +25,5 @@ export const NftMetadataSchema = new Schema<NftMetadata, NftMetadataModelType>({
     tokenId: { type: Number, required: false, index: true },
     address: { type: String, required: true, index: true, lowercase: true },
     sentences: { type: [String], required: true },
+    lastUpdated: { type: Date, required: true },
 })

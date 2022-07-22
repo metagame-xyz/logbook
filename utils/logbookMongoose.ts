@@ -54,6 +54,8 @@ export class LogbookMongoose {
         try {
             const { address } = nftMetadata
 
+            console.log('nftMetadata', nftMetadata)
+
             const existingData = await cached.conn.models.NftMetadata.findOne({ address })
 
             if (existingData?.tokenId) {
@@ -88,10 +90,33 @@ export class LogbookMongoose {
         }
     }
 
-    async getUserForAddress(address: string): Promise<NftMetadata | null> {
+    async getMetadataForAddress(address: string): Promise<NftMetadata | null> {
         await this.connect()
         try {
             const user = await cached.conn.models.NftMetadata.findOne({ address })
+
+            console.log(user)
+
+            if (!user) return null
+
+            const parsedUser = nftMetadataZ.safeParse(user.toObject())
+
+            if (!parsedUser.success) {
+                console.error('Error', parsedUser)
+                return null
+            }
+
+            return parsedUser.success ? parsedUser.data : null
+        } catch (err) {
+            console.error('mongoose getUserForAddress error', err)
+            return null
+        }
+    }
+
+    async getMetadataForTokenId(tokenId: string): Promise<NftMetadata | null> {
+        await this.connect()
+        try {
+            const user = await cached.conn.models.NftMetadata.findOne({ tokenId })
 
             console.log(user)
 

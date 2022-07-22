@@ -27,10 +27,6 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         const decodedTx = await translator.getManyDecodedTxFromDB(user.txHashList)
         const interpretedData = await translator.interpretDecodedTxArr(decodedTx, address)
 
-        const weird = interpretedData.filter(
-            ({ txHash }) => txHash === '0x0555e01a552452bb9c8865c23daf511dfd5c817c77199f93f5d4d463b8d74970',
-        )
-
         // debugger
 
         type FilteredData = {
@@ -108,20 +104,58 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
             'Poolsuite - Executive Member': ['0xb228d7b6e099618ca71bd5522b3a8c3788a8f172'],
         }
 
+        const specialNfts = {
+            Shields: '0x0747118c9f44c7a23365b2476dcd05e03114c747',
+            Loot: '0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7',
+            Blitmap: '0x8d04a8c79ceb0889bdd12acdf3fa9d207ed3ff63',
+            CryptoCoven: '0x5180db8f5c931aae63c74266b211f580155ecac8',
+            MannysGame: '0x2bd58a19c7e4abf17638c5ee6fa96ee5eb53aed9',
+            DeveloperDAO: '0x25ed58c027921e14d86380ea2646e3a1b5c55a8b',
+            ChainRunners: '0x97597002980134bea46250aa0510c9b90d87a587',
+            Zora: '0xabefbc9fd2f806065b4f3c237d4b59d9a97bcac7',
+            Zorbs: '0xca21d4228cdcc68d4e23807e5e370c07577dd152',
+            TubbyCats: '0xca7ca7bcc765f77339be2d648ba53ce9c8a262bd',
+        }
+
         const knownAddressArr = getValues(knownAddresses).flat()
 
         // MINT
-        const mints = collect(data.minted).groupBy('contractAddress').all() as unknown as Record<
-            string,
-            Collection<FilteredData>
-        >
+
+        const mints = data.minted?.all() as unknown as FilteredData[]
+        // const mints = data.minted?.groupBy('contractAddress').all() as unknown as Record<
+        //     string,
+        //     Collection<FilteredData>
+        // >
         const mintSentences = []
         console.log('mints', mints)
 
         let nftMintNames = []
-        if (mints && getKeys(mints).length > 0) {
-            const erc721Mints = getValues(mints).filter((tx) => tx.all()[0]?.assetReceivedType === 'ERC721')
-            const erc20Mints = getValues(mints).filter((tx) => tx.all()[0]?.assetReceivedType === 'ERC20')
+        if (mints && mints.length > 0) {
+            const specialMints = mints.filter((tx) => getValues(specialNfts).includes(tx?.contractAddress))
+            const normalMints = mints.filter((tx) => !getValues(specialNfts).includes(tx?.contractAddress))
+
+            const specialMintsGrouped = collect(specialMints).groupBy('contractName').all() as unknown as Record<
+                string,
+                Collection<FilteredData>
+            >
+            const normalMintsGrouped = collect(normalMints).groupBy('contractAddress').all() as unknown as Record<
+                string,
+                Collection<FilteredData>
+            >
+
+            for (const [nftName, txs] of getEntries(specialMintsGrouped)) {
+                // debugger
+                const count = txs.count()
+                const plural = count > 1 ? 's' : ''
+
+                const sentence = `minted ${count} ${nftName}${plural}`
+                mintSentences.push(sentence)
+            }
+
+            const erc721Mints = getValues(normalMintsGrouped).filter(
+                (tx) => tx.all()[0]?.assetReceivedType === 'ERC721',
+            )
+            const erc20Mints = getValues(normalMintsGrouped).filter((tx) => tx.all()[0]?.assetReceivedType === 'ERC20')
 
             nftMintNames = erc721Mints.map((tx) => [tx.all()[0]?.contractName, tx.all()[0]?.contractAddress])
 
@@ -314,7 +348,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
                 prefixIfNotPlural = plural ? '' : prefixIfNotPlural
                 const plural2 = count > 1 ? 'es' : ''
 
-                if (count > 0) {
+                if (count > 0 && asset) {
                     sentSentences.push(`sent ${prefixIfNotPlural}${asset}${plural} to ${count} address${plural2}`)
                 }
             }
@@ -361,7 +395,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
                     prefixIfNotPlural = plural ? '' : prefixIfNotPlural
                     const plural2 = count > 1 ? 's' : ''
 
-                    if (count > 0) {
+                    if (count > 0 && asset) {
                         receivedSentences.push(
                             `received ${prefixIfNotPlural}${asset}${plural} from ${fromName} ${count} time${plural2}`,
                         )
@@ -402,7 +436,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
                 prefixIfNotPlural = plural ? '' : prefixIfNotPlural
                 const plural2 = count > 1 ? 'es' : ''
 
-                if (count > 0) {
+                if (count > 0 && asset) {
                     sentSentences.push(`received ${prefixIfNotPlural}${asset}${plural} from ${count} address${plural2}`)
                 }
             }
@@ -479,7 +513,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
 
         if (transferred.length > 0) {
             const plural = transferred.length > 1 ? 'es' : ''
-            transferredSentences.push(`received ${transferred.length} OG ENS${plural}`)
+            transferredSentences.push(`received ${transferred.length} ENS${plural}`)
         }
 
         // bridged (need contract-specific first)
@@ -539,12 +573,9 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
 
         res.status(200).json({
             nftMintNames,
-            names,
             keys,
             sentences,
-            sent,
-            data,
-            // unknownTxs,
+            transferred,
         })
     } catch (err: any) {
         console.error(err)

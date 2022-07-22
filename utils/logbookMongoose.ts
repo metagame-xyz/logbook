@@ -60,7 +60,7 @@ export class LogbookMongoose {
                 nftMetadata.tokenId = existingData.tokenId
             }
 
-            const { result } = await cached.conn.models.NftMetadata.findOneAndUpdate({ address }, nftMetadata, {
+            const result = await cached.conn.models.NftMetadata.findOneAndUpdate({ address }, nftMetadata, {
                 upsert: true,
             })
 

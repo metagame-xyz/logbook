@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import generateSVG from 'utils/generateSvg'
+import generateSvg from 'utils/generateSvg'
+import { addToIpfsFromSvgStr } from 'utils/ipfs'
 import logbookMongoose from 'utils/logbookMongoose'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -12,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(404).send({ message: `Image for token id ${tokenId} not found.` })
     }
 
-    const svgString = generateSVG(metadata)
+    const svgString = generateSvg(metadata)
 
     const svgBuffer = Buffer.from(svgString, 'utf-8')
     res.setHeader('Content-Type', 'image/svg+xml')

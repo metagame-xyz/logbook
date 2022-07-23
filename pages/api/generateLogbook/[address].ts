@@ -4,6 +4,8 @@ import collect, { Collection } from 'collect.js'
 import { Action, ActivityData, AddressZ, getEntries, getKeys, getValues } from 'evm-translator'
 
 import { WEBSITE_URL } from 'utils/constants'
+import generateSvg from 'utils/generateSvg'
+import { addToIpfsFromSvgStr } from 'utils/ipfs'
 import logbookMongoose from 'utils/logbookMongoose'
 import metabotMongoose from 'utils/metabot'
 import { NftMetadata } from 'utils/models'
@@ -557,12 +559,18 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         const nftMetadata: NftMetadata = {
             name: `${user.ens}'s Logbook`,
             description: 'A compilation of all the transactions this address has been involved in',
-            image: 'https://upload.wikimedia.org/wikipedia/commons/1/19/PIA24794-MarsIngenuityHelicopter-Logbook-Flt9%2610-20210816.jpg',
-            externalUrl: `https://${WEBSITE_URL}/view/${user.address}`,
+            image: 'failed to load to ipfs',
+            externalUrl: `https://${WEBSITE_URL}/logbook/${user.address}`,
             address: user.address,
             sentences,
             lastUpdated: new Date(),
         }
+
+        const svgString = generateSvg(nftMetadata)
+
+        const ipfsUrl = await addToIpfsFromSvgStr(svgString)
+
+        nftMetadata.image = ipfsUrl
 
         await logbookMongoose.connect()
         await logbookMongoose.addOrUpdateNftMetadata(nftMetadata)

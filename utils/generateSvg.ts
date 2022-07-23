@@ -1,6 +1,6 @@
 import { NftMetadata } from './models'
 
-export default function generateSVG(metadata: NftMetadata): string {
+export default function generateSvg(metadata: NftMetadata): string {
     const { sentences, name, lastUpdated } = metadata
 
     const titleOffset = 30

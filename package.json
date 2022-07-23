@@ -4,7 +4,7 @@
     "private": false,
     "license": "GPL-3.0-or-later",
     "scripts": {
-        "dev": "next dev",
+        "dev": "concurrently --kill-others \"lt --port 3000 --subdomain logbook\" \"next dev\"",
         "build": "next build",
         "start": "next start",
         "format": "prettier --write \"**/*.ts\" \"**/*.tsx\"",

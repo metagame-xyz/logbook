@@ -1,25 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { isValidEventForwarderSignature } from 'utils'
-import { addOrUpdateNft } from 'utils/addOrUpdateNft'
+import logbookMongoose from 'utils/logbookMongoose'
 import { LogData, logError, logSuccess } from 'utils/logging'
+import withMiddleware from 'utils/middleware'
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    console.log('tokenId:', req.query.tokenId)
-    if (req.method !== 'POST') {
-        return res.status(404).send({})
-    }
-
-    /****************/
-    /*     AUTH     */
-    /****************/
-    if (!isValidEventForwarderSignature(req)) {
-        const error = 'invalid event-forwarder Signature'
-        return res.status(403).send({ error })
-    }
-
-    const { minterAddress, tokenId } = req.body
-    const address: string = minterAddress.toLowerCase()
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const { address, tokenId } = req.body
 
     const logData: LogData = {
         level: 'info',
@@ -29,12 +15,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         wallet_address: address,
     }
 
-    // if (process.env.VERCEL_ENV !== 'production') {
-    //     address = addressMap[tokenId.toString()];
-    // }
-
     try {
-        const result = await addOrUpdateNft(address, tokenId, true)
+        await logbookMongoose.connect()
+
+        const metadata = await logbookMongoose.addTokenIdForAddress(address, tokenId)
+
+        const result = {
+            minterAddress: metadata.address,
+            tokenId: metadata.tokenId,
+            userName: metadata.userName,
+            ensName: metadata.userName,
+        }
 
         logSuccess(logData)
         res.status(200).send({
@@ -44,6 +35,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         })
     } catch (error) {
         logError(logData, error)
-        return res.status(500).send({ error })
+
+        res.status(500).json({ error: error.message })
     }
 }
+
+export default withMiddleware('eventForwarderAuth')(handler)

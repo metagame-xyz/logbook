@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 import collect, { Collection } from 'collect.js'
 import { Action, ActivityData, AddressZ, getEntries, getKeys, getValues } from 'evm-translator'
+import { addressToName } from 'onoma'
 
 import { WEBSITE_URL } from 'utils/constants'
 import generateSvg from 'utils/generateSvg'
@@ -556,12 +557,15 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
             ...unknownSentences,
         ]
 
+        const userName = user.ens || addressToName(user.address)
+
         const nftMetadata: NftMetadata = {
-            name: `${user.ens}'s Logbook`,
+            name: `${userName}'s Logbook`,
             description: 'A compilation of all the transactions this address has been involved in',
             image: 'failed to load to ipfs',
             externalUrl: `https://${WEBSITE_URL}/logbook/${user.address}`,
             address: user.address,
+            userName,
             sentences,
             lastUpdated: new Date(),
         }

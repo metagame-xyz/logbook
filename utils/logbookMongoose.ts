@@ -72,19 +72,16 @@ export class LogbookMongoose {
         }
     }
 
-    async addTokenIdForAddress(address: string, tokenId: number): Promise<void> {
+    async addTokenIdForAddress(address: string, tokenId: number): Promise<NftMetadata> {
         await this.connect()
         try {
-            console.log('address', address, tokenId)
-            const data = await cached.conn.models.NftMetadata.findOne({ address })
+            const metadata = await cached.conn.models.NftMetadata.findOneAndUpdate(
+                { address },
+                { tokenId },
+                { upsert: true },
+            )
 
-            console.log(data)
-            let count = await cached.conn.models.NftMetadata.countDocuments()
-            console.log(count)
-
-            await cached.conn.models.NftMetadata.findOneAndUpdate({ address }, { tokenId }, { upsert: true })
-            count = await cached.conn.models.NftMetadata.countDocuments()
-            console.log(count)
+            return metadata.toObject()
         } catch (err) {
             console.error('mongoose addOrUpdateNftMetadata error', err)
         }

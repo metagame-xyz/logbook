@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import generateSvg from 'utils/generateSvg'
-import { addToIpfsFromSvgStr } from 'utils/ipfs'
 import logbookMongoose from 'utils/logbookMongoose'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

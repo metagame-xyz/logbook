@@ -9,6 +9,7 @@ export const nftMetadataZ = z.object({
     externalUrl: string,
     tokenId: int.optional(),
     address: AddressZ,
+    userName: string,
     sentences: string.array(),
     lastUpdated: z.date(),
 })
@@ -24,6 +25,7 @@ export const NftMetadataSchema = new Schema<NftMetadata, NftMetadataModelType>({
     externalUrl: { type: String, required: true },
     tokenId: { type: Number, required: false, index: true },
     address: { type: String, required: true, index: true, lowercase: true },
+    userName: { type: String, required: true },
     sentences: { type: [String], required: true },
     lastUpdated: { type: Date, required: true },
 })

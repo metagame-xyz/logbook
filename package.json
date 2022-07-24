@@ -26,7 +26,7 @@
         "datadog-winston": "^1.5.1",
         "dotenv": "^16.0.1",
         "ethers": "^5.5.1",
-        "evm-translator": "^0.2.50",
+        "evm-translator": "^0.2.51",
         "framer-motion": "^4",
         "ioredis": "^4.27.9",
         "ipfs-http-client": "50.1.2",

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import { AddressZ } from 'evm-translator'
+import { AddressZ, timer } from 'evm-translator'
 import { addressToName } from 'onoma'
 
 import { WEBSITE_URL } from 'utils/constants'
@@ -29,18 +29,27 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         logData.wallet_address = address
 
         logData.third_party_name = 'metabotMongoose'
+        timer.startTimer(logData.third_party_name)
         await metabotMongoose.connect()
         const user = await metabotMongoose.getUserByEthAddress(address)
+        timer.stopTimer(logData.third_party_name)
 
         if (!(user?.txHashList?.length > 0)) {
             throw new Error('No txHashList, or empty txHashList')
         }
 
         logData.third_party_name = 'evm-translator'
+        timer.startTimer('getTranslator')
         const translator = await getTranslator(address)
+        timer.stopTimer('getTranslator')
 
+        timer.startTimer('getManyDecodedTxFromDB')
         const decodedTx = await translator.getManyDecodedTxFromDB(user.txHashList)
+        timer.stopTimer('getManyDecodedTxFromDB')
+
+        timer.startTimer('interpretDecodedTxArr')
         const interpretedData = await translator.interpretDecodedTxArr(decodedTx, address)
+        timer.stopTimer('interpretDecodedTxArr')
 
         // debugger
 
@@ -64,13 +73,17 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         const svgString = generateSvg(nftMetadata)
 
         logData.third_party_name = 'ipfs'
+        timer.startTimer('addToIpfsFromSvgStr')
         const ipfsUrl = await addToIpfsFromSvgStr(svgString)
+        timer.stopTimer('addToIpfsFromSvgStr')
 
         nftMetadata.image = ipfsUrl
 
         logData.third_party_name = 'logbookMongoose'
+        timer.startTimer('logbookMongoose.addOrUpdateNftMetadata')
         await logbookMongoose.connect()
         await logbookMongoose.addOrUpdateNftMetadata(nftMetadata)
+        timer.startTimer('logbookMongoose.addOrUpdateNftMetadata')
 
         // const todo = data.______TODO______.filter((tx) => tx.toName !== 'OPENSEA')
 

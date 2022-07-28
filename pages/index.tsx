@@ -12,7 +12,7 @@ import { useAccount } from 'wagmi'
 import {
     ALCHEMY_PROJECT_ID,
     blackholeAddress,
-    CONTRACT_ADDRESS,
+    LOGBOOK_CONTRACT_ADDRESS,
     METABOT_API_URL,
     networkStrings,
     WEBSITE_URL,
@@ -23,8 +23,6 @@ import { Metadata } from 'utils/metadata'
 import { maxW } from 'components/Layout'
 import { fetcher } from 'utils/frontend'
 import logbookAbi from 'utils/logbookAbi'
-
-const LOGBOOK_CONTRACT_ADDRESS = "0x536ea5d11e914bcef00889a8e790947cd8603e29"
 
 function About({ heading, text }) {
     return (
@@ -81,7 +79,7 @@ function Home({ metadata }) {
         const contract = new ethers.Contract(LOGBOOK_CONTRACT_ADDRESS, logbookAbi, provider)
         const contractWithSigner = contract.connect(signer)
 
-        let tx = await contractWithSigner.mintWithSignature(account.address, expandedSignature.v, expandedSignature.r, expandedSignature.s, {
+        const tx = await contractWithSigner.mintWithSignature(account.address, expandedSignature.v, expandedSignature.r, expandedSignature.s, {
             gasLimit: 2100000,
             gasPrice: 8000000000,
             value: ethers.utils.parseEther("0.01")

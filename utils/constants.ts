@@ -24,7 +24,7 @@ export const LOGBOOK_DB_CONNECTION_STRING = process.env.LOGBOOK_MONGODB_CONNECTI
 export const EVM_TRANSLATOR_CONNECTION_STRING = process.env.EVM_TRANSLATOR_CONNECTION_STRING
 
 /* Frontend Constants */
-export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS?.toLowerCase()
+export const LOGBOOK_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_LOGBOOK_CONTRACT_ADDRESS?.toLowerCase()
 export const NETWORK = process.env.NEXT_PUBLIC_NETWORK?.toLowerCase()
 export const INFURA_PROJECT_ID = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID
 export const ALCHEMY_PROJECT_ID = process.env.NEXT_PUBLIC_ALCHEMY_PROJECT_ID

@@ -15,34 +15,36 @@ type FilteredData = {
     assetReceivedType: string | undefined
 }
 
-export default function createSentences(interpretedData: Interpretation[]): Record<string, any> {
-    const filteredData = interpretedData.map(
-        ({
-            txHash,
-            actions,
-            contractName,
-            contractAddress,
-            exampleDescription,
-            toName,
-            fromName,
-            assetsReceived,
-            assetsSent,
-        }) => {
-            return {
-                actions,
+export default function createSentences(interpretedData: (Interpretation | null)[]): Record<string, any> {
+    const filteredData = interpretedData
+        .filter((data) => data !== null)
+        .map(
+            ({
                 txHash,
-                localLink: `http://localhost:3000/api/tx/${txHash}`,
-                link: `https://etherscan.io/tx/${txHash}`,
+                actions,
                 contractName,
                 contractAddress,
                 exampleDescription,
                 toName,
                 fromName,
-                assetSentType: assetsSent[0]?.type,
-                assetReceivedType: assetsReceived[0]?.type,
-            } as FilteredData
-        },
-    )
+                assetsReceived,
+                assetsSent,
+            }) => {
+                return {
+                    actions,
+                    txHash,
+                    localLink: `http://localhost:3000/api/tx/${txHash}`,
+                    link: `https://etherscan.io/tx/${txHash}`,
+                    contractName,
+                    contractAddress,
+                    exampleDescription,
+                    toName,
+                    fromName,
+                    assetSentType: assetsSent[0]?.type,
+                    assetReceivedType: assetsReceived[0]?.type,
+                } as FilteredData
+            },
+        )
 
     const grouped = collect(filteredData).groupBy('actions')
 

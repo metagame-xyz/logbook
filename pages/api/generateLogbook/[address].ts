@@ -29,27 +29,27 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         logData.wallet_address = address
 
         logData.third_party_name = 'metabotMongoose'
-        timer.startTimer(logData.third_party_name)
+        // timer.startTimer(logData.third_party_name)
         await metabotMongoose.connect()
         const user = await metabotMongoose.getUserByEthAddress(address)
-        timer.stopTimer(logData.third_party_name)
+        // timer.stopTimer(logData.third_party_name)
 
         if (!(user?.txHashList?.length > 0)) {
             throw new Error('No txHashList, or empty txHashList')
         }
 
         logData.third_party_name = 'evm-translator'
-        timer.startTimer('getTranslator')
+        // timer.startTimer('getTranslator')
         const translator = await getTranslator(address)
-        timer.stopTimer('getTranslator')
+        // timer.stopTimer('getTranslator')
 
-        timer.startTimer('getManyDecodedTxFromDB')
+        timer.startTimer('getTxHashFromDB')
         const decodedTx = await translator.getManyDecodedTxFromDB(user.txHashList)
-        timer.stopTimer('getManyDecodedTxFromDB')
+        timer.stopTimer('getTxHashFromDB')
 
-        timer.startTimer('interpretDecodedTxArr')
+        timer.startTimer('interpretTxArr')
         const interpretedData = await translator.interpretDecodedTxArr(decodedTx, address)
-        timer.stopTimer('interpretDecodedTxArr')
+        timer.stopTimer('interpretTxArr')
 
         // debugger
 
@@ -73,17 +73,17 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         const svgString = generateSvg(nftMetadata)
 
         logData.third_party_name = 'ipfs'
-        timer.startTimer('addToIpfsFromSvgStr')
+        // timer.startTimer('addToIpfsFromSvgStr')
         const ipfsUrl = await addToIpfsFromSvgStr(svgString)
-        timer.stopTimer('addToIpfsFromSvgStr')
+        // timer.stopTimer('addToIpfsFromSvgStr')
 
         nftMetadata.image = ipfsUrl
 
         logData.third_party_name = 'logbookMongoose'
-        timer.startTimer('logbookMongoose.addOrUpdateNftMetadata')
+        // timer.startTimer('logbookMongoose.addOrUpdateNftMetadata')
         await logbookMongoose.connect()
         await logbookMongoose.addOrUpdateNftMetadata(nftMetadata)
-        timer.startTimer('logbookMongoose.addOrUpdateNftMetadata')
+        // timer.startTimer('logbookMongoose.addOrUpdateNftMetadata')
 
         // const todo = data.______TODO______.filter((tx) => tx.toName !== 'OPENSEA')
 

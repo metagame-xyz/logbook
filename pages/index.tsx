@@ -53,7 +53,7 @@ function Home({ metadata }) {
         if (account && !whitelistLoading) {
             setWhitelistLoading(true)
             console.log('calling', account.address);
-            const response = axios.get(`${METABOT_API_URL}premintCheck?` + new URLSearchParams({ address: account.address }), { 
+            const response = axios.get(`${METABOT_API_URL}premintCheck/${account.address}`, { 
                 headers: { 
                     'content-type': 'application/json',
                 },

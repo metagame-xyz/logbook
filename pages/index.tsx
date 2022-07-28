@@ -56,6 +56,7 @@ function Home({ metadata }) {
             const response = axios.get(`${METABOT_API_URL}premintCheck?` + new URLSearchParams({ address: account.address }), { 
                 headers: { 
                     'content-type': 'application/json',
+                    'Bypass-Tunnel-Reminder': '*',
                 },
             })
                 .then((resp) => {
@@ -246,22 +247,26 @@ function Home({ metadata }) {
                     <About heading={copy.heading3} text={copy.text3} />
                 </SimpleGrid>
             </Box>
-            <Button
-                onClick={mint}
-                loadingText="Minting..."
-                fontWeight="normal"
-                colorScheme="brand"
-                bgColor="brand.600"
-                // color="brand.900"
-                _hover={{ bg: 'brand.500' }}
-                size="lg"
-                height="60px"
-                minW="xs"
-                boxShadow="lg"
-                fontSize="4xl"
-                borderRadius="full">
-                Mint
-            </Button>
+            { account?.address ? 
+                <Button
+                    onClick={mint}
+                    loadingText="Minting..."
+                    fontWeight="normal"
+                    colorScheme="brand"
+                    bgColor="brand.600"
+                    // color="brand.900"
+                    _hover={{ bg: 'brand.500' }}
+                    size="lg"
+                    height="60px"
+                    minW="xs"
+                    boxShadow="lg"
+                    fontSize="4xl"
+                    borderRadius="full">
+                    Mint
+                </Button>
+                : <></>
+            }
+            
 
             {/* <VStack justifyContent="center" spacing={4} px={4} py={8} bgColor="brand.700">
                 {!minted && !userTokenId ? (

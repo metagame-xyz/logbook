@@ -56,7 +56,6 @@ function Home({ metadata }) {
             const response = axios.get(`${METABOT_API_URL}premintCheck?` + new URLSearchParams({ address: account.address }), { 
                 headers: { 
                     'content-type': 'application/json',
-                    'Bypass-Tunnel-Reminder': '*',
                 },
             })
                 .then((resp) => {

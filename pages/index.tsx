@@ -9,7 +9,7 @@ import { BigNumber, Contract, ethers, Wallet } from 'ethers'
 import { addressToNameObject } from 'onoma'
 import { useAccount, useProvider, useSigner } from 'wagmi'
 
-import { ALCHEMY_PROJECT_ID, blackholeAddress, CONTRACT_ADDRESS, networkStrings, WEBSITE_URL } from 'utils/constants'
+import { ALCHEMY_PROJECT_ID, blackholeAddress, CONTRACT_ADDRESS, METABOT_BASE_API_URL, networkStrings, WEBSITE_URL } from 'utils/constants'
 import { copy } from 'utils/content'
 import { debug, event } from 'utils/frontend'
 import logbookAbi from 'utils/logbookAbi'
@@ -57,7 +57,7 @@ function Home({ metadata }) {
             setAllowlistLoading(true)
             console.log('calling', address)
             const response = axios
-                .get(`api/premintCheck/${address}`, {
+                .get(`${METABOT_BASE_API_URL}premintCheck/${address}`, {
                     // headers: {
                     //     'content-type': 'application/json',
                     // },

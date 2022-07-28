@@ -2522,6 +2522,7 @@
     eslint-visitor-keys "^3.3.0"
 
 "@vanilla-extract/css@1.7.0":
+
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@vanilla-extract/css/-/css-1.7.0.tgz#7276830c7741b17b7a70720be88c9083682f5206"
   integrity sha512-2Abpr5aJskwKS+waMWxWnTBqq/rj4J93KtGteW0VSORMUsijrupwjOXECd7Llh+nSFfx/Y6usuexF5/ffyDF8A==
@@ -5567,6 +5568,7 @@ evm-translator@^0.2.51:
   version "0.2.51"
   resolved "https://registry.yarnpkg.com/evm-translator/-/evm-translator-0.2.51.tgz#2716d7882c9d0d99e76b314b7ba999c0d70a9af1"
   integrity sha512-+dEygjuwN3LVuG5iBZzTQ5JlPv+wNPoBJwRBJjqRUo4rMSZc2alxmE5/BTuLqE6yQ2M4EeVWewtdgsLOjreN1A==
+
   dependencies:
     "@alch/alchemy-sdk" "^1.0.3"
     "@gnosis.pm/safe-ethers-lib" "^1.1.0"

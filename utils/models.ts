@@ -12,6 +12,7 @@ export const nftMetadataZ = z.object({
     userName: string,
     sentences: string.array(),
     lastUpdated: z.date(),
+
 })
 
 export type NftMetadata = z.infer<typeof nftMetadataZ>

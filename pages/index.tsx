@@ -1,7 +1,7 @@
 import Head from 'next/head'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
-import { Box, Button, Heading, Stack, Text } from 'grommet'
+import { Box, Button, Heading, ResponsiveContext, Stack, Text } from 'grommet'
 import { parseEther } from '@ethersproject/units'
 import axios from 'axios'
 import { BigNumber, Contract, ethers, Wallet } from 'ethers'
@@ -46,19 +46,27 @@ function Home({ metadata }) {
     if (errorCode === 1) cantMintReason = `You're not on the allowlist yet. Plz message Metabot`
     if (errorCode === 2) cantMintReason = `You're on the allowlist but the Enigma Machine hasn't finished processing your data`
     
+    const isMobile = useContext(ResponsiveContext) === 'small';
+    console.log('mobile?', isMobile)
+    
+    
     useEffect(() => {
+        const windowHeight = window.innerHeight
         const zoomElement = document.querySelector(".zoom")
-        console.log(zoomElement)
-        let zoom = 1
+        const baseZoom = isMobile ? 1 : 0.95
+        console.log(baseZoom)
+        zoomElement.style.transform = `scale(${baseZoom})`  
+        let zoom = baseZoom
         const ZOOM_SPEED = 0.1
         
         let xDown = null;                                                        
         let yDown = null;
         
         const handleWheel = (e) => {
-            if(e.deltaY > 0){    
+            e.preventDefault()
+            if(e.deltaY > 0 && zoom < 1.2){    
                 zoomElement.style.transform = `scale(${zoom += ZOOM_SPEED})`  
-            }else if (zoom > 1) {    
+            }else if (zoom > baseZoom) {    
                 zoomElement.style.transform = `scale(${zoom -= ZOOM_SPEED})`  
             }
         }
@@ -83,10 +91,13 @@ function Home({ metadata }) {
             const yDiff = yDown - yUp;
             
             if ( Math.abs( xDiff ) < Math.abs( yDiff ) ) {
-                if ( yDiff > 0 ) {
-                    zoomElement.style.transform = `scale(${zoom += ZOOM_SPEED})`  
-                } else if (zoom > 1) { 
-                    zoomElement.style.transform = `scale(${zoom -= ZOOM_SPEED})`  
+                console.log(zoom, window.innerHeight, zoomElement.offsetHeight * zoom)
+                if ( yDiff > 0 && window.innerHeight > zoomElement.offsetHeight * zoom) {
+                    zoom += ZOOM_SPEED
+                    zoomElement.style.transform = `scale(${zoom})`  
+                } else if (zoom > baseZoom) { 
+                    zoom -= ZOOM_SPEED
+                    zoomElement.style.transform = `scale(${zoom})`  
                 }                                                                 
             }
             /* reset values */
@@ -98,7 +109,8 @@ function Home({ metadata }) {
         document.addEventListener('touchstart', handleTouchStart, { passive: false, capture: false })       
         document.addEventListener('touchmove', handleTouchMove, { passive: false, capture: false })
         
-        
+        document.addEventListener("scroll", (e) => e.preventDefault(), { passive: false, capture: false })
+
         
     }, [])
     
@@ -284,88 +296,88 @@ function Home({ metadata }) {
         // };
         return (
             <Stack fill>
-            <Box fill className="zoom" justify="center">
-            <Lottie options={options} width="fit-content" />
-            </Box>
-            
-            <Head>
-            <title>{copy.title}</title>
-            </Head>
-            <Box>
-            <Box>
-            <Text>
-            {address}
-            </Text>
-            </Box>
-            
-            <Text>
-            {!allowlistLoading && address ? <>{isAllowlisted ? 'Whitelistedddd' : 'Not whitelisted'}</> : null}
-            </Text>
-            <div
-            style={{
-                aspectRatio: '1/1',
-                width: '80%',
-                maxWidth: '800px',
-            }}
-            ></div>
-            </Box>
-            {/* <Box px={8} py={8} width="fit-content" margin="auto" maxW={maxW}>
-            <SimpleGrid columns={[1, 1, 1, 3]} spacing={16}>
-            <About heading={copy.heading1} text={copy.text1} />
-            <About heading={copy.heading2} text={copy.text2} />
-            <About heading={copy.heading3} text={copy.text3} />
-            </SimpleGrid>
-        </Box> */}
-        { address ? 
-            <Button
-            onClick={mint}
-            size="large"
-            >
-            Mint
-            </Button>
-            : <></>
-        }
-        
-        
-        {/* <VStack justifyContent="center" spacing={4} px={4} py={8} bgColor="brand.700">
-        {!minted && !userTokenId ? (
-            <Button
-            onClick={userAddress ? mint : () => openWeb3Modal('Main Page Section')}
-            isLoading={minting}
-            loadingText="Minting..."
-            isDisabled={minted}
-            fontWeight="normal"
-            colorScheme="brand"
-            bgColor="brand.600"
-            // color="brand.900"
-            _hover={{ bg: 'brand.500' }}
-            size="lg"
-            height="60px"
-            minW="xs"
-            boxShadow="lg"
-            fontSize="4xl"
-            borderRadius="full">
-            {userAddress ? mintText() : 'Connect Wallet'}
-            </Button>
-            ) : (
-                <Box fontSize={[24, 24, 36]} color="white">
-                <Text>{`${userName}'s ${copy.title} (#${userTokenId}) has been minted.`}</Text>
-                <Button
-                colorScheme="brand"
-                color="white"
-                variant="outline"
-                _hover={{ bgColor: 'brand.600' }}
-                _active={{ bgColor: 'brand.500' }}
-                mt={2}
-                size="lg"
-                rightIcon={<ExternalLinkIcon />}
-                onClick={() => window.open(heartbeatShowerLink(userTokenId))}>
-                View your Heartbeat
-                </Button>
+                <Box fill className="zoom" justify="center">
+                    <Lottie options={options} width="fit-content" />
                 </Box>
-                )}
-                {textUnderButton()}
-            </VStack> */}
+                
+                <Head>
+                    <title>{copy.title}</title>
+                </Head>
+                <Box>
+                    <Box>
+                        <Text>
+                            {address}
+                        </Text>
+                    </Box>
+                
+                    <Text>
+                        {!allowlistLoading && address ? <>{isAllowlisted ? 'Whitelistedddd' : 'Not whitelisted'}</> : null}
+                    </Text>
+                    <div
+                    style={{
+                        aspectRatio: '1/1',
+                        width: '80%',
+                        maxWidth: '800px',
+                    }}
+                    ></div>
+                </Box>
+                {/* <Box px={8} py={8} width="fit-content" margin="auto" maxW={maxW}>
+                <SimpleGrid columns={[1, 1, 1, 3]} spacing={16}>
+                <About heading={copy.heading1} text={copy.text1} />
+                <About heading={copy.heading2} text={copy.text2} />
+                <About heading={copy.heading3} text={copy.text3} />
+                </SimpleGrid>
+            </Box> */}
+                { address ? 
+                    <Button
+                    onClick={mint}
+                    size="large"
+                    >
+                    Mint
+                    </Button>
+                    : <></>
+                }
+            
+            
+            {/* <VStack justifyContent="center" spacing={4} px={4} py={8} bgColor="brand.700">
+            {!minted && !userTokenId ? (
+                <Button
+                onClick={userAddress ? mint : () => openWeb3Modal('Main Page Section')}
+                isLoading={minting}
+                loadingText="Minting..."
+                isDisabled={minted}
+                fontWeight="normal"
+                colorScheme="brand"
+                bgColor="brand.600"
+                // color="brand.900"
+                _hover={{ bg: 'brand.500' }}
+                size="lg"
+                height="60px"
+                minW="xs"
+                boxShadow="lg"
+                fontSize="4xl"
+                borderRadius="full">
+                {userAddress ? mintText() : 'Connect Wallet'}
+                </Button>
+                ) : (
+                    <Box fontSize={[24, 24, 36]} color="white">
+                    <Text>{`${userName}'s ${copy.title} (#${userTokenId}) has been minted.`}</Text>
+                    <Button
+                    colorScheme="brand"
+                    color="white"
+                    variant="outline"
+                    _hover={{ bgColor: 'brand.600' }}
+                    _active={{ bgColor: 'brand.500' }}
+                    mt={2}
+                    size="lg"
+                    rightIcon={<ExternalLinkIcon />}
+                    onClick={() => window.open(heartbeatShowerLink(userTokenId))}>
+                    View your Heartbeat
+                    </Button>
+                    </Box>
+                    )}
+                    {textUnderButton()}
+                </VStack> */}
             </Stack>
             )
         }

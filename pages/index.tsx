@@ -17,8 +17,6 @@ import { Metadata } from 'utils/metadata'
 
 import { maxW } from 'components/Layout'
 
-const LOGBOOK_CONTRACT_ADDRESS = '0x536ea5d11e914bcef00889a8e790947cd8603e29'
-
 function About({ heading, text }) {
     return (
         <VStack maxW={['sm', 'md', 'md', 'full']}>

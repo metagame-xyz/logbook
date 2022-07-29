@@ -7,7 +7,7 @@ div#__next > div {
     margin: 0;
     font-family: 'Lars', monospace;
     /* font-family: 'Lato', sans-serif; */
-    min-width: 100%;
+    width: fit-content;
 }
 
 a {

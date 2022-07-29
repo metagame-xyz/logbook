@@ -25,7 +25,7 @@ export const theme = extendTheme({
         },
     },
     fonts: {
-        heading: 'Lato',
-        body: 'Lato',
+        heading: 'Lars',
+        body: 'Lars',
     },
 })

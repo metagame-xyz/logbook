@@ -1,8 +1,7 @@
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 
-import { ExternalLinkIcon } from '@chakra-ui/icons'
-import { AccordionButton, Box, Button, Container, Heading, Link, SimpleGrid, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Heading, Stack, Text } from 'grommet'
 import { parseEther } from '@ethersproject/units'
 import axios from 'axios'
 import { BigNumber, Contract, ethers, Wallet } from 'ethers'
@@ -17,19 +16,17 @@ import { Metadata } from 'utils/metadata'
 
 import { maxW } from 'components/Layout'
 
-function About({ heading, text }) {
-    return (
-        <VStack maxW={['sm', 'md', 'md', 'full']}>
-            <Heading as="h2" fontSize="24px">
-                {heading}
-            </Heading>
-            <Text align="center">{text}</Text>
-        </VStack>
-    )
-}
+import newThing from 'public/static/animations/too-big.json'
+import Lottie from 'react-lottie'
 
-function heartbeatShowerLink(tokenId: number): string {
-    return `https://${WEBSITE_URL}/heart/${tokenId}`
+const options = {
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    animationData: newThing,
+    renderingSettings: {
+        preserveAspectRatio: 'xMidYMid slice',
+    },
 }
 
 function Home({ metadata }) {
@@ -47,8 +44,24 @@ function Home({ metadata }) {
     let cantMintReason = null
 
     if (errorCode === 1) cantMintReason = `You're not on the allowlist yet. Plz message Metabot`
-    if (errorCode === 2)
-        cantMintReason = `You're on the allowlist but the Enigma Machine hasn't finished processing your data`
+    if (errorCode === 2) cantMintReason = `You're on the allowlist but the Enigma Machine hasn't finished processing your data`
+
+    useEffect(() => {
+        const zoomElement = document.querySelector(".zoom")
+        console.log(zoomElement)
+        let zoom = 1
+        const ZOOM_SPEED = 0.1
+        document.addEventListener("wheel", (e) => {
+                if(e.deltaY > 0){    
+                    zoomElement.style.transform = `scale(${zoom += ZOOM_SPEED})`;  
+                }else{    
+                    zoomElement.style.transform = `scale(${zoom -= ZOOM_SPEED})`;    
+                }
+            }
+        );
+    }, [])
+    
+
 
     useEffect(() => {
         if (address && !allowlistLoading) {
@@ -224,24 +237,22 @@ function Home({ metadata }) {
     //     }
     // };
     return (
-        <Container>
+        <Stack fill>
+            <Box fill className="zoom" justify="center">
+                <Lottie options={options} width="fit-content" />
+            </Box>
+
             <Head>
                 <title>{copy.title}</title>
             </Head>
-            <Box px={8} pt={8} width="fit-content" mx="auto" maxW={maxW}>
-                <Heading as="h1" fontSize={[54, 72, 96]} textAlign="center" color="brand.900">
-                    {copy.title}
-                </Heading>
-                <Text fontSize={[16, 22, 30]} fontWeight="light" maxW={['container.md']} pb={4}>
-                    {copy.heroSubheading}
-                </Text>
+            <Box>
                 <Box>
-                    <Text maxWidth="xs">
+                    <Text>
                         {address}
                     </Text>
                 </Box>
 
-                <Text fontSize={[16, 22, 30]} fontWeight="light" maxW={['container.md']} pb={4}>
+                <Text>
                     {!allowlistLoading && address ? <>{isAllowlisted ? 'Whitelistedddd' : 'Not whitelisted'}</> : null}
                 </Text>
                 <div
@@ -252,28 +263,18 @@ function Home({ metadata }) {
                     }}
                 ></div>
             </Box>
-            <Box px={8} py={8} width="fit-content" margin="auto" maxW={maxW}>
+            {/* <Box px={8} py={8} width="fit-content" margin="auto" maxW={maxW}>
                 <SimpleGrid columns={[1, 1, 1, 3]} spacing={16}>
                     <About heading={copy.heading1} text={copy.text1} />
                     <About heading={copy.heading2} text={copy.text2} />
                     <About heading={copy.heading3} text={copy.text3} />
                 </SimpleGrid>
-            </Box>
+            </Box> */}
             { address ? 
                 <Button
                     onClick={mint}
-                    loadingText="Minting..."
-                    fontWeight="normal"
-                    colorScheme="brand"
-                    bgColor="brand.600"
-                    // color="brand.900"
-                    _hover={{ bg: 'brand.500' }}
-                    size="lg"
-                    height="60px"
-                    minW="xs"
-                    boxShadow="lg"
-                    fontSize="4xl"
-                    borderRadius="full">
+                    size="large"
+                >
                     Mint
                 </Button>
                 : <></>
@@ -319,18 +320,7 @@ function Home({ metadata }) {
                 )}
                 {textUnderButton()}
             </VStack> */}
-            <Box px={8} py={20} width="fit-content" margin="auto" maxW={maxW}>
-                <Heading as="h1" fontSize={['24', '24', '36']} textAlign="center">
-                    {copy.bottomSectonHeading}
-                </Heading>
-                <Text mt={4} fontWeight="light" maxW="xl">
-                    {copy.bottomSectionText}
-                    <Link isExternal href={'https://twitter.com/The_Metagame'}>
-                        @The_Metagame
-                    </Link>
-                </Text>
-            </Box>
-        </Container>
+        </Stack>
     )
 }
 

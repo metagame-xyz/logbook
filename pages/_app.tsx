@@ -26,15 +26,13 @@ function App({ Component, pageProps }: AppProps): JSX.Element {
     const Layout = dynamic(() => import('components/Layout'))
 
     return (
-        <Grommet theme={theme}>
-            <WagmiConfig client={wagmiClient}>
-                <RainbowKitProvider chains={chains} theme={customTheme}>
-                    <Layout>
-                        <Component {...pageProps} />
-                    </Layout>
-                </RainbowKitProvider>
-            </WagmiConfig>
-        </Grommet>
+        <WagmiConfig client={wagmiClient} >
+            <RainbowKitProvider chains={chains} theme={customTheme}>
+                <Grommet theme={theme} background="backgroundDark" full style={{ maxWidth: "100%"}}>
+                    <Component {...pageProps} />
+                </Grommet>
+            </RainbowKitProvider>
+        </WagmiConfig>
     )
 }
 

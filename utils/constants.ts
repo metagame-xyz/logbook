@@ -24,6 +24,7 @@ export const LOGBOOK_DB_CONNECTION_STRING = process.env.LOGBOOK_DB_CONNECTION_ST
 export const EVM_TRANSLATOR_CONNECTION_STRING = process.env.EVM_TRANSLATOR_CONNECTION_STRING
 
 export const isProdEnv = process.env.NODE_ENV === 'production'
+
 /* Frontend Constants */
 export const NETWORK = process.env.NEXT_PUBLIC_NETWORK?.toLowerCase()
 export const INFURA_PROJECT_ID = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID

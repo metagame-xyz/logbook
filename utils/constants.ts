@@ -25,7 +25,6 @@ export const EVM_TRANSLATOR_CONNECTION_STRING = process.env.EVM_TRANSLATOR_CONNE
 
 export const isProdEnv = process.env.NODE_ENV === 'production'
 /* Frontend Constants */
-export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS?.toLowerCase()
 export const NETWORK = process.env.NEXT_PUBLIC_NETWORK?.toLowerCase()
 export const INFURA_PROJECT_ID = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID
 export const ALCHEMY_PROJECT_ID = process.env.NEXT_PUBLIC_ALCHEMY_PROJECT_ID

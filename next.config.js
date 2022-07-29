@@ -1,8 +1,8 @@
 module.exports = {
     reactStrictMode: true,
-    // images: {
-    //     domains: ['ipfs.infura.io'],
-    // },
+    images: {
+        domains: ['ipfs.infura.io'],
+    },
     webpack: (config, options) => {
         if (!options.isServer) {
             config.resolve.fallback.fs = false

@@ -1,4 +1,7 @@
 module.exports = {
+    images: {
+        domains: ['ipfs.infura.io'],
+    },
     reactStrictMode: true,
     webpack: (config, options) => {
         if (!options.isServer) {

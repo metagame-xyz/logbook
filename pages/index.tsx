@@ -9,7 +9,7 @@ import { BigNumber, Contract, ethers, Wallet } from 'ethers'
 import { addressToNameObject } from 'onoma'
 import { useAccount, useProvider, useSigner } from 'wagmi'
 
-import { ALCHEMY_PROJECT_ID, blackholeAddress, CONTRACT_ADDRESS, LOGBOOK_CONTRACT_ADDRESS, networkStrings, WEBSITE_URL } from 'utils/constants'
+import { ALCHEMY_PROJECT_ID, blackholeAddress, LOGBOOK_CONTRACT_ADDRESS, networkStrings, WEBSITE_URL } from 'utils/constants'
 import { copy } from 'utils/content'
 import { debug, event } from 'utils/frontend'
 import logbookAbi from 'utils/logbookAbi'

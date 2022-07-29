@@ -5,7 +5,7 @@ import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { Box, Button } from '@chakra-ui/react'
 
 import { ioredisClient } from 'utils'
-import { CONTRACT_ADDRESS } from 'utils/constants'
+import { LOGBOOK_CONTRACT_ADDRESS } from 'utils/constants'
 import { clickableIPFSLink } from 'utils/frontend'
 import logbookMongoose from 'utils/logbookMongoose'
 
@@ -26,7 +26,7 @@ function HeartPage({ tokenId, metadata }: InferGetServerSidePropsType<typeof get
     const keysToKeep = ['name', 'description', 'address']
 
     const getOpenSeaUrl = (tokenId: string) => {
-        return `https://opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId}`
+        return `https://opensea.io/assets/${LOGBOOK_CONTRACT_ADDRESS}/${tokenId}`
     }
     // const attributes = (metadata: Metadata) => {
     //     return (

@@ -2,7 +2,7 @@ import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 
 import { ExternalLinkIcon } from '@chakra-ui/icons'
-import { AccordionButton, Box, Button, Heading, Link, SimpleGrid, Text, VStack } from '@chakra-ui/react'
+import { AccordionButton, Box, Button, Container, Heading, Link, SimpleGrid, Text, VStack } from '@chakra-ui/react'
 import { parseEther } from '@ethersproject/units'
 import axios from 'axios'
 import { BigNumber, Contract, ethers, Wallet } from 'ethers'
@@ -224,7 +224,7 @@ function Home({ metadata }) {
     //     }
     // };
     return (
-        <Box>
+        <Container>
             <Head>
                 <title>{copy.title}</title>
             </Head>
@@ -234,9 +234,13 @@ function Home({ metadata }) {
                 </Heading>
                 <Text fontSize={[16, 22, 30]} fontWeight="light" maxW={['container.md']} pb={4}>
                     {copy.heroSubheading}
-                    <br />
-                    {address}
                 </Text>
+                <Box>
+                    <Text maxWidth="xs">
+                        {address}
+                    </Text>
+                </Box>
+
                 <Text fontSize={[16, 22, 30]} fontWeight="light" maxW={['container.md']} pb={4}>
                     {!allowlistLoading && address ? <>{isAllowlisted ? 'Whitelistedddd' : 'Not whitelisted'}</> : null}
                 </Text>
@@ -326,7 +330,7 @@ function Home({ metadata }) {
                     </Link>
                 </Text>
             </Box>
-        </Box>
+        </Container>
     )
 }
 

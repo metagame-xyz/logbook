@@ -1,13 +1,13 @@
 import Head from 'next/head'
 import React, { useContext, useEffect, useState } from 'react'
 
-import { Box, Button, Heading, ResponsiveContext, Stack, Text } from 'grommet'
+import { Avatar, Box, Button, Heading, Image, ResponsiveContext, Stack, Text } from 'grommet'
 import { parseEther } from '@ethersproject/units'
 import axios from 'axios'
 import { BigNumber, Contract, ethers, Wallet } from 'ethers'
 import { addressToNameObject } from 'onoma'
 import { useAccount, useProvider, useSigner } from 'wagmi'
-
+import { Etherscan, Logo, Opensea, Twitter } from 'components/Icons'
 import {
     ALCHEMY_PROJECT_ID,
     blackholeAddress,
@@ -24,6 +24,7 @@ import { maxW } from 'components/Layout'
 
 import newThing from 'public/static/animations/too-big.json'
 import Lottie from 'react-lottie'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 const options = {
     renderer: 'svg',
@@ -169,8 +170,16 @@ function Home({ metadata }) {
                 value: ethers.utils.parseEther('0.01'),
             },
             )
-            console.log('Transaction:', tx.hash)
-        }
+        console.log('Transaction:', tx.hash)
+    }
+
+    const PlusBorder = () => (
+        <Box align="center">
+            {
+                [...Array(100).keys()].map((i) => <Text key={i} color="brand">+</Text>)
+            }
+        </Box>
+    )
         
         // const contract = new Contract(CONTRACT_ADDRESS, heartbeat.abi, provider);
         
@@ -305,13 +314,33 @@ function Home({ metadata }) {
                 </Box>
             
                 <Box fill pad={isMobile ? "none" : { horizontal: "medium", top: "medium", bottom: "none" }}>
-                    <Box fill background="backgroundLight" round={isMobile ? "none" : "small"}>
-                        <Text>
-                            {address}
-                        </Text>
-                        <Text>
-                        {!allowlistLoading && address ? <>{isAllowlisted ? 'Whitelistedddd' : 'Not whitelisted'}</> : null}
-                    </Text>
+                    <Box background="backgroundLight" round={isMobile ? "none" : "small"} pad="small" direction="row" gap="medium" flex>
+                        <PlusBorder />
+                        <Box margin="small">
+                            <Image src="/static/assets/logbookLogo.svg" alt="Logbook Logo" />
+                            <Box align="center" direction="row">
+                                <Twitter />
+                                <Opensea />
+                                <Etherscan />
+                                {address ? (
+                                    <Box color="white" round="large">
+                                        <Box direction="row">
+                                            {/* {avatarUrl && <Avatar size="xs" src={`${avatarUrl}`} />} */}
+                                            <Text>{address}</Text>
+                                        </Box>
+                                    </Box>
+                                ) : (
+                                    <ConnectButton />
+                                )}
+                            </Box>
+                            <Text>
+                                {address}
+                            </Text>
+                            <Text>    
+                                {!allowlistLoading && address ? <>{isAllowlisted ? 'Whitelistedddd' : 'Not whitelisted'}</> : null}
+                            </Text>
+                        </Box>
+                        <PlusBorder />
                 </Box>
                 
                 </Box>

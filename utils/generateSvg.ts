@@ -9,8 +9,9 @@ export default function generateSvg(metadata: NftMetadata): string {
     const dividerOffset = titleOffset + 20
     const sentenceOffset = dividerOffset + 20
 
-    const backgroundColor = 'beige'
-    const fontColor = 'rgb(21, 61, 38)'
+    const backgroundColor = 'rgb(251, 247, 241)' //FBF7F1 light beige
+    // const fontColor = 'rgb(21, 61, 38)' //163D26 green
+    const fontColor = 'rgb(200, 68, 20)' //C84414 orange
     const fontFamily = 'monospace'
     const sentenceSize = 16
     const sentenceSpaceSize = sentenceSize * 1.15
@@ -79,7 +80,7 @@ export default function generateSvg(metadata: NftMetadata): string {
     // const yOffset = yCoord + canvasWidth / 2
 
     // const dateSvg = `<text x="${0}" y="${0}" transform="translate(${xCoord} ${yCoord}) rotate(-45)" class="date">${dateStr}</text>`
-    const dateSvg = `<a href="https://evm-translator.xyz/contribute"> <text x="${0}" y="${0}" transform="translate(${xCoord} ${yCoord}) rotate(30)" class="date">${dateStr}</text></a>`
+    const dateSvg = `<text x="${0}" y="${0}" transform="translate(${xCoord} ${yCoord}) rotate(30)" class="date">${dateStr}</text>`
 
     // const timeGradientSVG = timeGradientArr.join('')
     /**************/

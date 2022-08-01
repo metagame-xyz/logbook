@@ -1,6 +1,7 @@
 module.exports = {
     reactStrictMode: true,
     images: {
+        dangerouslyAllowSVG: true,
         domains: ['ipfs.infura.io'],
     },
     webpack: (config, options) => {

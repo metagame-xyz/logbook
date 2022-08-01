@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React, { useContext, useEffect, useState } from 'react'
 
+import { datadogRum } from '@datadog/browser-rum'
 import { parseEther } from '@ethersproject/units'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import axios from 'axios'
@@ -9,7 +10,7 @@ import { Avatar, Box, Button, Heading, Image, ResponsiveContext, Stack, Text } f
 import { addressToNameObject } from 'onoma'
 import newThing from 'public/static/animations/enigma-small.json'
 import Lottie from 'react-lottie'
-import { useAccount, useProvider, useSigner } from 'wagmi'
+import { useAccount, useEnsName, useProvider, useSigner } from 'wagmi'
 
 import {
     ALCHEMY_PROJECT_ID,
@@ -39,7 +40,17 @@ const options = {
 
 function Home({}) {
     // const { provider, signer, userAddress, userName, eventParams, openWeb3Modal, toast } = useEthereum();
-    const { address, isConnecting, isDisconnected } = useAccount()
+    const { address, isConnecting, isDisconnected } = useAccount({ onDisconnect: datadogRum.removeUser })
+    const { data: ensName } = useEnsName({ address })
+
+    useEffect(() => {
+        if (address) {
+            datadogRum.setUser({
+                id: address,
+                name: ensName,
+            })
+        }
+    }, [address])
 
     const provider = useProvider()
     const { data: signer, isError, isLoading } = useSigner()
@@ -180,23 +191,26 @@ function Home({}) {
                 value: ethers.utils.parseEther('0.01'),
             },
         )
+        const txReceipt = await tx.wait()
+        const [fromAddress, toAddress, tokenId] = txReceipt.events.find((e) => (e.event = 'Transfer')).args
+
+        datadogRum.addAction('mint success', {
+            txHash: tx.hash,
+            tokenId: tokenId.toString(),
+        })
+
         console.log('Transaction:', tx.hash)
     }
 
-    const PlusBorder = () => {
-        const contentHeight = contentContainer?.clientHeight || 0
-        if (!contentHeight) return null
-
-        return (
-            <Box align="center" className="plus-border" height={`${contentHeight}px`} style={{ overflowY: 'hidden' }}>
-                {[...Array(100).keys()].map((i) => (
-                    <Text key={i} color="brand">
-                        +
-                    </Text>
-                ))}
-            </Box>
-        )
-    }
+    const PlusBorder = () => (
+        <Box align="center">
+            {[...Array(100).keys()].map((i) => (
+                <Text key={i} color="brand">
+                    +
+                </Text>
+            ))}
+        </Box>
+    )
 
     // const contract = new Contract(CONTRACT_ADDRESS, heartbeat.abi, provider);
 

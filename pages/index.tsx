@@ -113,12 +113,13 @@ function Home({ metadata }) {
             xDown = xUp;
             yDown = yUp;                                             
         };
+        
         document.addEventListener("wheel", handleWheel, { passive: false, capture: false })
         
         document.addEventListener('touchstart', handleTouchStart, { passive: false, capture: false })       
         document.addEventListener('touchmove', handleTouchMove, { passive: false, capture: false })
         
-        document.addEventListener("scroll", (e) => e.preventDefault(), { passive: false, capture: false })
+        // document.addEventListener("scroll", (e) => e.preventDefault(), { passive: false, capture: false })
 
         
     }, [])
@@ -298,31 +299,21 @@ function Home({ metadata }) {
             <Stack fill>
                 <Box fill className="zoom" justify="center">
                     <Lottie 
-                    options={options} 
-                    width="fit-content" 
-                />
+                        options={options} 
+                        width="fit-content" 
+                    />
                 </Box>
-                
-                <Head>
-                    <title>{copy.title}</title>
-                </Head>
-                <Box>
-                    <Box>
+            
+                <Box fill pad={isMobile ? "none" : { horizontal: "medium", top: "medium", bottom: "none" }}>
+                    <Box fill background="backgroundLight" round={isMobile ? "none" : "small"}>
                         <Text>
                             {address}
                         </Text>
-                    </Box>
-                
-                    <Text>
+                        <Text>
                         {!allowlistLoading && address ? <>{isAllowlisted ? 'Whitelistedddd' : 'Not whitelisted'}</> : null}
                     </Text>
-                    <div
-                    style={{
-                        aspectRatio: '1/1',
-                        width: '80%',
-                        maxWidth: '800px',
-                    }}
-                    ></div>
+                </Box>
+                
                 </Box>
                 {/* <Box px={8} py={8} width="fit-content" margin="auto" maxW={maxW}>
                 <SimpleGrid columns={[1, 1, 1, 3]} spacing={16}>

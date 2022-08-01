@@ -28,7 +28,7 @@ function App({ Component, pageProps }: AppProps): JSX.Element {
     return (
         <WagmiConfig client={wagmiClient} >
             <RainbowKitProvider chains={chains} theme={customTheme}>
-                <Grommet theme={theme} background="backgroundDark" full style={{ maxWidth: "100%"}}>
+                <Grommet theme={theme} background="backgroundDark" className="grommet-container">
                     <Component {...pageProps} />
                 </Grommet>
             </RainbowKitProvider>

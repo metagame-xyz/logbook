@@ -30,3 +30,7 @@ a {
     font-display: optional;
     src: url(/fonts/LarsMono-RegularWeb.woff2) format('woff2');
 }
+
+.grommet-container {
+    overflow: hidden;
+}

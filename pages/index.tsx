@@ -57,24 +57,31 @@ function Home({ metadata }) {
     const isMobile = useContext(ResponsiveContext) === 'small';
 
     useEffect(() => {
+        const contentLayerElement = document.querySelector('.main-stack').children[1]
+        contentLayerElement.style.overflowY = 'auto'
+        contentLayerElement.classList.add('content-layer')
+    }, [])
+
+    useEffect(() => {
         const zoomElement = document.querySelector(".zoom")
         const baseZoom = isMobile ? 1 : 0.95
 
         zoomElement.style.transform = `scale(${baseZoom})`  
         let zoom = baseZoom
-        const ZOOM_SPEED = 0.1
+        const ZOOM_SPEED = 0.05
         
         let xDown = null;                                                        
         let yDown = null;
         
         const handleWheel = (e) => {
-            e.preventDefault()
-
             const svgElement = document.querySelector(".zoom")?.querySelector("g")
-            if(e.deltaY > 0 && window.innerWidth * 1.4 > svgElement.getBoundingClientRect().width){    
+            const contentLayerElement = document.querySelector(".content-layer")
+            if(e.deltaY > 0 && window.innerWidth * 1.4 > svgElement.getBoundingClientRect().width){
+                e.preventDefault()    
                 zoom += ZOOM_SPEED
                 zoomElement.style.transform = `scale(${zoom})`  
-            }else if (e.deltaY < 0 && zoom > baseZoom) { 
+            }else if (e.deltaY < 0 && zoom > baseZoom && !contentLayerElement.scrollTop) {
+                e.preventDefault() 
                 zoom -= ZOOM_SPEED
                 zoomElement.style.transform = `scale(${zoom})`  
             }
@@ -92,7 +99,6 @@ function Home({ metadata }) {
         };                                                
         
         const handleTouchMove = (e) => {
-            e.preventDefault()
             const xUp = e.touches[0].clientX;                                    
             const yUp = e.touches[0].clientY;
             
@@ -100,12 +106,15 @@ function Home({ metadata }) {
             const yDiff = yDown - yUp;
 
             const svgElement = document.querySelector(".zoom")?.querySelector("g")
-            
+            const contentLayerElement = document.querySelector(".content-layer")
+
             if ( Math.abs( xDiff ) < Math.abs( yDiff ) && svgElement) {
                 if ( yDiff > 0 && window.innerHeight > svgElement.getBoundingClientRect().height) {
+                    e.preventDefault()
                     zoom += ZOOM_SPEED
                     zoomElement.style.transform = `scale(${zoom})`  
-                } else if (yDiff < 0 && zoom > baseZoom) { 
+                } else if (yDiff < 0 && zoom > baseZoom && !contentLayerElement.scrollTop) {
+                    e.preventDefault() 
                     zoom -= ZOOM_SPEED
                     zoomElement.style.transform = `scale(${zoom})`  
                 }                                                                 
@@ -117,10 +126,8 @@ function Home({ metadata }) {
         
         document.addEventListener("wheel", handleWheel, { passive: false, capture: false })
         
-        document.addEventListener('touchstart', handleTouchStart, { passive: false, capture: false })       
-        document.addEventListener('touchmove', handleTouchMove, { passive: false, capture: false })
-        
-        // document.addEventListener("scroll", (e) => e.preventDefault(), { passive: false, capture: false })
+        // document.addEventListener('touchstart', handleTouchStart, { passive: false, capture: false })       
+        // document.addEventListener('touchmove', handleTouchMove, { passive: false, capture: false })
 
         
     }, [])
@@ -305,15 +312,15 @@ function Home({ metadata }) {
         //     }
         // };
         return (
-            <Stack fill>
-                <Box fill className="zoom" justify="center">
+            <Stack fill="horizontal" className="main-stack">
+                <Box height="100vh" className="zoom" justify="center">
                     <Lottie 
                         options={options} 
                         width="fit-content" 
                     />
                 </Box>
             
-                <Box fill pad={isMobile ? "none" : { horizontal: "medium", top: "medium", bottom: "none" }}>
+                <Box style={{marginTop: '100vh'}} pad={isMobile ? "none" : { horizontal: "medium", top: "medium", bottom: "none" }}>
                     <Box background="backgroundLight" round={isMobile ? "none" : "small"} pad="small" direction="row" gap="large" flex>
                         <PlusBorder />
                         <Box margin="small" fill gap="large">
@@ -353,6 +360,9 @@ function Home({ metadata }) {
                                 </Button>
                                 : <></>
                             }
+                            <Image src={`/static/assets/pageDivider${isMobile ? "Mobile" : "Desktop"}.svg`} alt="Page divider" />
+                            <Image src={`/static/assets/pageDivider${isMobile ? "Mobile" : "Desktop"}.svg`} alt="Page divider" />
+                            <Image src={`/static/assets/pageDivider${isMobile ? "Mobile" : "Desktop"}.svg`} alt="Page divider" />
                             <Image src={`/static/assets/pageDivider${isMobile ? "Mobile" : "Desktop"}.svg`} alt="Page divider" />
 
                         </Box>

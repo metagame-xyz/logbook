@@ -68,7 +68,9 @@ function Home({ metadata }) {
         
         const handleWheel = (e) => {
             e.preventDefault()
-            if(e.deltaY > 0 && zoom < 1.2){    
+
+            const svgElement = document.querySelector(".zoom")?.querySelector("g")
+            if(e.deltaY > 0 && window.innerWidth * 1.4 > svgElement.getBoundingClientRect().width){    
                 zoom += ZOOM_SPEED
                 zoomElement.style.transform = `scale(${zoom})`  
             }else if (e.deltaY < 0 && zoom > baseZoom) { 
@@ -120,13 +122,6 @@ function Home({ metadata }) {
 
         
     }, [])
-    
-    
-    
-    
-    
-    
-    
     
     useEffect(() => {
         if (address && !allowlistLoading) {

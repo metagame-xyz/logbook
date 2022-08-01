@@ -896,6 +896,26 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
+"@datadog/browser-core@4.16.0":
+  version "4.16.0"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.16.0.tgz#41d3d58f4c1327a5580f7b3589424a26b92de777"
+  integrity sha512-uNc7lJ3h8xgXLM4g2J96nb8ntxZ/+nMC+vkBsRPqq8ZhuMNJDLgURy2UMB457OPzoksBewHo9nqOUmP6v0chLw==
+
+"@datadog/browser-rum-core@4.16.0":
+  version "4.16.0"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.16.0.tgz#0589dfab0277d98c3e7a57f5b356bdc0ff8b6040"
+  integrity sha512-uliXF81H81tBYBvazU6yScAJZoEjOwAiX98BvWvUYSUMxBbB6/PGTWd7l13RYtCena2RBlq+zijTacT0B+yrww==
+  dependencies:
+    "@datadog/browser-core" "4.16.0"
+
+"@datadog/browser-rum@^4.16.0":
+  version "4.16.0"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.16.0.tgz#1ce59429cabd11b154935c5d92dd34c3f5ed3102"
+  integrity sha512-5yyw9NbZpNySeJ4f5dM/7iDmMR4/BCnev9GNSjMHfMHKc2UDOEnduyng2PMfAilbMA2mlHX7yoelQc3zn4Tahg==
+  dependencies:
+    "@datadog/browser-core" "4.16.0"
+    "@datadog/browser-rum-core" "4.16.0"
+
 "@datadog/native-metrics@^1.1.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@datadog/native-metrics/-/native-metrics-1.2.0.tgz#6f8d39ba870d247ba5c72297ab5ed8461f686279"
@@ -7549,13 +7569,6 @@ luxon@^1.28.0:
   version "1.28.0"
   resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.28.0.tgz#e7f96daad3938c06a62de0fb027115d251251fbf"
   integrity sha512-TfTiyvZhwBYM/7QdAVDh+7dBTBA29v4ik0Ce9zda3Mnf8on1S5KJI8P2jKFZ8+5C0jhmr0KwJEO/Wdpm0VeWJQ==
-
-make-dir@^3.0.2:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-3.1.0.tgz#415e967046b3a7f1d185277d84aa58203726a13f"
-  integrity sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==
-  dependencies:
-    semver "^6.0.0"
 
 markdown-to-jsx@^7.1.5:
   version "7.1.7"

@@ -19,7 +19,6 @@ import {
 import { copy } from 'utils/content'
 import { debug, event } from 'utils/frontend'
 import logbookAbi from 'utils/logbookAbi'
-import { Metadata } from 'utils/metadata'
 
 import { maxW } from 'components/Layout'
 
@@ -38,7 +37,7 @@ function heartbeatShowerLink(tokenId: number): string {
     return `https://${WEBSITE_URL}/heart/${tokenId}`
 }
 
-function Home({ metadata }) {
+function Home({}) {
     // const { provider, signer, userAddress, userName, eventParams, openWeb3Modal, toast } = useEthereum();
     const { address, isConnecting, isDisconnected } = useAccount()
 

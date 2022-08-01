@@ -314,35 +314,50 @@ function Home({ metadata }) {
                 </Box>
             
                 <Box fill pad={isMobile ? "none" : { horizontal: "medium", top: "medium", bottom: "none" }}>
-                    <Box background="backgroundLight" round={isMobile ? "none" : "small"} pad="small" direction="row" gap="medium" flex>
+                    <Box background="backgroundLight" round={isMobile ? "none" : "small"} pad="small" direction="row" gap="large" flex>
                         <PlusBorder />
-                        <Box margin="small">
+                        <Box margin="small" fill gap="large">
                             <Image src="/static/assets/logbookLogo.svg" alt="Logbook Logo" />
-                            <Box align="center" direction="row">
-                                <Twitter />
-                                <Opensea />
-                                <Etherscan />
-                                {address ? (
-                                    <Box color="white" round="large">
-                                        <Box direction="row">
-                                            {/* {avatarUrl && <Avatar size="xs" src={`${avatarUrl}`} />} */}
-                                            <Text>{address}</Text>
-                                        </Box>
-                                    </Box>
-                                ) : (
+                            <Box direction={isMobile ? "column" : "row"}>
+                                <Box basis="2/3">
+                                <Text color="brand">
+                                Logbook elevator pitch goes here. Lorem ipsum dolor sit    
+        amet, consectetur adipiscing elit, sunt in culpa qui anim. 
+        sed do eiusmod tempor incididunt ut labore et dolore magna 
+        aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
+        ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                </Text>
+                                </Box>
+                                
+                                <Box align="center" direction="row" basis="1/3">
+                                    <Twitter />
+                                    <Opensea />
+                                    <Etherscan />
                                     <ConnectButton />
-                                )}
+                                </Box>
                             </Box>
+                         
                             <Text>
                                 {address}
                             </Text>
                             <Text>    
                                 {!allowlistLoading && address ? <>{isAllowlisted ? 'Whitelistedddd' : 'Not whitelisted'}</> : null}
                             </Text>
+                            { address ? 
+                                <Button
+                                    onClick={mint}
+                                    size="large"
+                                >
+                                    Mint
+                                </Button>
+                                : <></>
+                            }
+                            <Image src={`/static/assets/pageDivider${isMobile ? "Mobile" : "Desktop"}.svg`} alt="Page divider" />
+
                         </Box>
                         <PlusBorder />
-                </Box>
-                
+                    </Box>
                 </Box>
                 {/* <Box px={8} py={8} width="fit-content" margin="auto" maxW={maxW}>
                 <SimpleGrid columns={[1, 1, 1, 3]} spacing={16}>
@@ -351,15 +366,6 @@ function Home({ metadata }) {
                 <About heading={copy.heading3} text={copy.text3} />
                 </SimpleGrid>
             </Box> */}
-                { address ? 
-                    <Button
-                    onClick={mint}
-                    size="large"
-                    >
-                    Mint
-                    </Button>
-                    : <></>
-                }
             
             
             {/* <VStack justifyContent="center" spacing={4} px={4} py={8} bgColor="brand.700">

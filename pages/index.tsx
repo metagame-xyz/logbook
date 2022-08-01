@@ -25,6 +25,8 @@ import { maxW } from 'components/Layout'
 import newThing from 'public/static/animations/too-big.json'
 import Lottie from 'react-lottie'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
+import CustomConnectButton from 'components/ConnectButton'
+import MintButton from 'components/MintButton'
 
 const options = {
     renderer: 'svg',
@@ -47,7 +49,6 @@ function Home({ metadata }) {
     const [errorCode, setErrorCode] = useState<number | null>(null)
     const [allowlistLoading, setAllowlistLoading] = useState(false)
     const [expandedSignature, setExpandedSignature] = useState({ v: null, r: null, s: null })
-    const [svgElement, setSvgElement] = useState()
 
     let cantMintReason = null
     
@@ -126,8 +127,8 @@ function Home({ metadata }) {
         
         document.addEventListener("wheel", handleWheel, { passive: false, capture: false })
         
-        // document.addEventListener('touchstart', handleTouchStart, { passive: false, capture: false })       
-        // document.addEventListener('touchmove', handleTouchMove, { passive: false, capture: false })
+        document.addEventListener('touchstart', handleTouchStart, { passive: false, capture: false })       
+        document.addEventListener('touchmove', handleTouchMove, { passive: false, capture: false })
 
         
     }, [])
@@ -325,45 +326,34 @@ function Home({ metadata }) {
                         <PlusBorder />
                         <Box margin="small" fill gap="large">
                             <Image src="/static/assets/logbookLogo.svg" alt="Logbook Logo" />
-                            <Box direction={isMobile ? "column" : "row"}>
+                            <Box direction={isMobile ? "column" : "row"} gap="medium">
                                 <Box basis="2/3">
-                                <Text color="brand">
-                                Logbook elevator pitch goes here. Lorem ipsum dolor sit    
-        amet, consectetur adipiscing elit, sunt in culpa qui anim. 
-        sed do eiusmod tempor incididunt ut labore et dolore magna 
-        aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-        ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                </Text>
+                                    <Text color="brand">
+                                    Logbook elevator pitch goes here. Lorem ipsum dolor sit    
+            amet, consectetur adipiscing elit, sunt in culpa qui anim. 
+            sed do eiusmod tempor incididunt ut labore et dolore magna 
+            aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
+            ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                    </Text>
                                 </Box>
                                 
-                                <Box align="center" direction="row" basis="1/3">
-                                    <Twitter />
-                                    <Opensea />
-                                    <Etherscan />
-                                    <ConnectButton />
+                                <Box align="end" gap="medium" basis="1/3">
+                                    <CustomConnectButton />
+                                    <MintButton canMint={address && isAllowlisted} mint={mint} />
                                 </Box>
                             </Box>
-                         
-                            <Text>
-                                {address}
-                            </Text>
-                            <Text>    
-                                {!allowlistLoading && address ? <>{isAllowlisted ? 'Whitelistedddd' : 'Not whitelisted'}</> : null}
-                            </Text>
-                            { address ? 
-                                <Button
-                                    onClick={mint}
-                                    size="large"
-                                >
-                                    Mint
-                                </Button>
-                                : <></>
-                            }
+
+                            
                             <Image src={`/static/assets/pageDivider${isMobile ? "Mobile" : "Desktop"}.svg`} alt="Page divider" />
-                            <Image src={`/static/assets/pageDivider${isMobile ? "Mobile" : "Desktop"}.svg`} alt="Page divider" />
-                            <Image src={`/static/assets/pageDivider${isMobile ? "Mobile" : "Desktop"}.svg`} alt="Page divider" />
-                            <Image src={`/static/assets/pageDivider${isMobile ? "Mobile" : "Desktop"}.svg`} alt="Page divider" />
+                            <Box>
+                                <Text>
+                                {   `MM   MM  EEEEE TTTTTTT  AAA    GGG    AAA   MM   MM  EEEEE \n
+                                    M M M M  EEEE     T    A   A  G      A   A  M M M M  EEEE \n
+                                    M  M  M  E        T    AAAAA  G  GG  AAAAA  M  M  M  E \n
+                                    M     M  EEEEE    T    A   A   GGG   A   A  M     M  EEEEE`}
+                                </Text>
+                            </Box>
 
                         </Box>
                         <PlusBorder />

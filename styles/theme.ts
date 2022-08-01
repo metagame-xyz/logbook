@@ -1,4 +1,35 @@
 const theme = {
+    button: {
+        default: {
+            border: {
+                radius: '0px',
+                color: 'brand'
+            },
+            background: {
+                color: 'backgroundLight'
+            },
+            color: 'brand'
+        },
+        primary: {
+            border: {
+                radius: '0px'
+            },
+            background: {
+                color: '#000000'
+            }
+        },
+        secondary: {
+            border: {
+                radius: '0px',
+                color: 'brand',
+                width: '1px'
+            },
+            color: 'brand'
+        },
+        border: {
+            radius: '0px'
+        },
+    },
     global: {
         font: {
         family: 'Lars',

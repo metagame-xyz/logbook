@@ -90,6 +90,12 @@ export default function createSentences(interpretedData: (Interpretation | null)
         Zora: '0xabefbc9fd2f806065b4f3c237d4b59d9a97bcac7',
         Zorbs: '0xca21d4228cdcc68d4e23807e5e370c07577dd152',
         TubbyCats: '0xca7ca7bcc765f77339be2d648ba53ce9c8a262bd',
+        BoysClub: '0x8158bdd0286e5b2384f2cf4eba94e741295d437e',
+        CompanionInABox: '0x13bd2ac3779cbbcb2ac874c33f1145dd71ce41ee',
+        AnimalColoringBook: '0x69c40e500b84660cb2ab09cb9614fa2387f95f64',
+        gallery: '0xe3d0fe9b7e0b951663267a3ed1e6577f6f79757e',
+        poolSuite: '0xb228d7b6e099618ca71bd5522b3a8c3788a8f172',
+        parallel: '0x76be3b62873462d2142405439777e971754e8e77',
     }
 
     const knownAddressArr = getValues(knownAddresses).flat()

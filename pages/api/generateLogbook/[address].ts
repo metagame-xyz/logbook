@@ -62,7 +62,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
             name: `${userName}'s Logbook`,
             description: 'A compilation of all the transactions this address has been involved in',
             image: 'failed to load to ipfs',
-            externalUrl: `https://${WEBSITE_URL}/logbook/${user.address}`,
+            externalUrl: `https://logbook.themetagame.xyz/logbook/${user.address}`,
             address: user.address,
             userName,
             sentences,
@@ -89,11 +89,13 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
 
         // delete data['______TODO______']
 
+        logData.extra = { sentences: sentences.length }
+
         logSuccess(logData)
 
-        const svgBuffer = Buffer.from(svgString, 'utf-8')
-        res.setHeader('Content-Type', 'image/svg+xml')
-        res.send(svgBuffer)
+        // const svgBuffer = Buffer.from(svgString, 'utf-8')
+        // res.setHeader('Content-Type', 'image/svg+xml')
+        // res.send(svgBuffer)
 
         res.status(200).json({
             // actions,

@@ -46,21 +46,19 @@ function Home({ metadata }) {
     const [errorCode, setErrorCode] = useState<number | null>(null)
     const [allowlistLoading, setAllowlistLoading] = useState(false)
     const [expandedSignature, setExpandedSignature] = useState({ v: null, r: null, s: null })
-    
+    const [svgElement, setSvgElement] = useState()
+
     let cantMintReason = null
     
     if (errorCode === 1) cantMintReason = `You're not on the allowlist yet. Plz message Metabot`
     if (errorCode === 2) cantMintReason = `You're on the allowlist but the Enigma Machine hasn't finished processing your data`
     
     const isMobile = useContext(ResponsiveContext) === 'small';
-    console.log('mobile?', isMobile)
-    
-    
+
     useEffect(() => {
-        const windowHeight = window.innerHeight
         const zoomElement = document.querySelector(".zoom")
         const baseZoom = isMobile ? 1 : 0.95
-        console.log(baseZoom)
+
         zoomElement.style.transform = `scale(${baseZoom})`  
         let zoom = baseZoom
         const ZOOM_SPEED = 0.1
@@ -71,9 +69,11 @@ function Home({ metadata }) {
         const handleWheel = (e) => {
             e.preventDefault()
             if(e.deltaY > 0 && zoom < 1.2){    
-                zoomElement.style.transform = `scale(${zoom += ZOOM_SPEED})`  
-            }else if (zoom > baseZoom) {    
-                zoomElement.style.transform = `scale(${zoom -= ZOOM_SPEED})`  
+                zoom += ZOOM_SPEED
+                zoomElement.style.transform = `scale(${zoom})`  
+            }else if (e.deltaY < 0 && zoom > baseZoom) { 
+                zoom -= ZOOM_SPEED
+                zoomElement.style.transform = `scale(${zoom})`  
             }
         }
         
@@ -95,13 +95,14 @@ function Home({ metadata }) {
             
             const xDiff = xDown - xUp;
             const yDiff = yDown - yUp;
+
+            const svgElement = document.querySelector(".zoom")?.querySelector("g")
             
-            if ( Math.abs( xDiff ) < Math.abs( yDiff ) ) {
-                console.log(zoom, window.innerHeight, zoomElement.offsetHeight * zoom)
-                if ( yDiff > 0 && window.innerHeight > zoomElement.offsetHeight * zoom) {
+            if ( Math.abs( xDiff ) < Math.abs( yDiff ) && svgElement) {
+                if ( yDiff > 0 && window.innerHeight > svgElement.getBoundingClientRect().height) {
                     zoom += ZOOM_SPEED
                     zoomElement.style.transform = `scale(${zoom})`  
-                } else if (zoom > baseZoom) { 
+                } else if (yDiff < 0 && zoom > baseZoom) { 
                     zoom -= ZOOM_SPEED
                     zoomElement.style.transform = `scale(${zoom})`  
                 }                                                                 
@@ -138,9 +139,7 @@ function Home({ metadata }) {
                 // },
             })
             .then((resp) => {
-                const { allowlist, signature, errorCode } = resp.data
-                console.log(resp.data)
-                
+                const { allowlist, signature, errorCode } = resp.data                
                 if (resp.data.allowlist) {
                     setExpandedSignature(signature)
                     setAllowlisted(allowlist)
@@ -303,7 +302,10 @@ function Home({ metadata }) {
         return (
             <Stack fill>
                 <Box fill className="zoom" justify="center">
-                    <Lottie options={options} width="fit-content" />
+                    <Lottie 
+                    options={options} 
+                    width="fit-content" 
+                />
                 </Box>
                 
                 <Head>

@@ -21,7 +21,7 @@ import logbookAbi from 'utils/logbookAbi'
 
 import { maxW } from 'components/Layout'
 
-import newThing from 'public/static/animations/too-big.json'
+import newThing from 'public/static/animations/enigma-small.json'
 import Lottie from 'react-lottie'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import CustomConnectButton from 'components/ConnectButton'

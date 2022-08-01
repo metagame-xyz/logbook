@@ -48,6 +48,7 @@ function Home({}) {
     const [errorCode, setErrorCode] = useState<number | null>(null)
     const [allowlistLoading, setAllowlistLoading] = useState(false)
     const [expandedSignature, setExpandedSignature] = useState({ v: null, r: null, s: null })
+    const [contentContainer, setContentContainer] = useState()
 
     let cantMintReason = null
     
@@ -60,6 +61,7 @@ function Home({}) {
         const contentLayerElement = document.querySelector('.main-stack').children[1]
         contentLayerElement.style.overflowY = 'auto'
         contentLayerElement.classList.add('content-layer')
+        setContentContainer(document.querySelector('.content-container'))
     }, [])
 
     useEffect(() => {
@@ -180,13 +182,19 @@ function Home({}) {
         console.log('Transaction:', tx.hash)
     }
 
-    const PlusBorder = () => (
-        <Box align="center">
+    const PlusBorder = (isLeft = false) => {
+        const contentHeight = contentContainer?.clientHeight || 0
+        if (!contentHeight) return null
+        
+        return (
+        <Box align="center" className="plus-border" height={`${contentHeight}px`} style={{ overflowY: 'hidden' }}>
             {
                 [...Array(100).keys()].map((i) => <Text key={i} color="brand">+</Text>)
             }
         </Box>
-    )
+        )
+    }
+    
         
         // const contract = new Contract(CONTRACT_ADDRESS, heartbeat.abi, provider);
         
@@ -321,8 +329,8 @@ function Home({}) {
                 </Box>
             
                 <Box style={{marginTop: '100vh'}} pad={isMobile ? "none" : { horizontal: "medium", top: "medium", bottom: "none" }}>
-                    <Box background="backgroundLight" round={isMobile ? "none" : "small"} pad="small" direction="row" gap="large" flex>
-                        <PlusBorder />
+                    <Box background="backgroundLight" round={isMobile ? "none" : "small"} pad="small" direction="row" gap="large" flex className="content-container">
+                        <PlusBorder isLeft />
                         <Box margin="small" fill gap="large">
                             <Image src="/static/assets/logbookLogo.svg" alt="Logbook Logo" />
                             <Box direction={isMobile ? "column" : "row"} gap="medium">
@@ -345,17 +353,17 @@ function Home({}) {
 
                             
                             <Image src={`/static/assets/pageDivider${isMobile ? "Mobile" : "Desktop"}.svg`} alt="Page divider" />
-                            <Box>
-                                <Text>
-                                {   `MM   MM  EEEEE TTTTTTT  AAA    GGG    AAA   MM   MM  EEEEE \n
-                                    M M M M  EEEE     T    A   A  G      A   A  M M M M  EEEE \n
-                                    M  M  M  E        T    AAAAA  G  GG  AAAAA  M  M  M  E \n
-                                    M     M  EEEEE    T    A   A   GGG   A   A  M     M  EEEEE`}
-                                </Text>
+                            <Box gap ="medium" direction={isMobile ? "column" : "row"} justify="between">
+                                <Box gap="medium">
+                                    <Image src={`/static/assets/metagameAsciiLogo.svg`} alt="Metagame ASCII logo" />
+                                    <Text color="brand">
+                                        Metagame blue sky vision copy goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                    </Text>
+                                </Box>
+                                <Image src={`/static/assets/exampleLogbook.svg`} alt="Example logbook" />
                             </Box>
-
                         </Box>
-                        <PlusBorder />
+                        <PlusBorder isLeft={false} />
                     </Box>
                 </Box>
                 {/* <Box px={8} py={8} width="fit-content" margin="auto" maxW={maxW}>

@@ -1,7 +1,7 @@
 import { Button } from 'grommet'
 import React, { useState } from 'react'
 
-const MintButton = ({ canMint = false, mint = () => {} }) => {
+const MintButton = ({ canMint = false, mint = (a) => a }) => {
   const [mintLabel, setMintLabel] = useState("Mint")
 
   return (

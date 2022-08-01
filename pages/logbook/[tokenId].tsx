@@ -12,7 +12,10 @@ import logbookMongoose from 'utils/logbookMongoose'
 export const getServerSideProps = async (context) => {
     const { tokenId } = context.query
 
-    const metadata = await logbookMongoose.getMetadataForTokenId(tokenId)
+    const metadata = tokenId.includes('0x')
+        ? await logbookMongoose.getMetadataForAddress(tokenId)
+        : await logbookMongoose.getMetadataForTokenId(tokenId)
+
     delete metadata.lastUpdated // if we need this then we need https://github.com/blitz-js/superjson#using-with-nextjs
     return {
         props: {
@@ -26,6 +29,7 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
     const getOpenSeaUrl = (tokenId: string) => {
         return `https://opensea.io/assets/${LOGBOOK_CONTRACT_ADDRESS}/${tokenId}`
     }
+    console.log(clickableIPFSLink(image))
     const size = ['80vw']
     return (
         <Box p="16px" minH="calc(100vh - 146px)" w="auto">

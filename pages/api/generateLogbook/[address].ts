@@ -54,7 +54,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         // debugger
 
         logData.third_party_name = 'createSentences'
-        const { sentences, actions, nftMintNames } = createSentences(interpretedData)
+        const { sentences, actions, nftMintNames, unknownTxs, reverted, paidByFwb } = createSentences(interpretedData)
 
         const userName = user.ens || addressToName(user.address)
 
@@ -90,10 +90,18 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         // delete data['______TODO______']
 
         logSuccess(logData)
+
+        const svgBuffer = Buffer.from(svgString, 'utf-8')
+        res.setHeader('Content-Type', 'image/svg+xml')
+        res.send(svgBuffer)
+
         res.status(200).json({
-            actions,
+            // actions,
+            paidByFwb,
             sentences,
             nftMintNames,
+            // unknownTxs,
+            reverted,
         })
     } catch (err: any) {
         logError(logData, err)

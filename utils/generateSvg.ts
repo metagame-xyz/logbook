@@ -3,6 +3,8 @@ import { NftMetadata } from './models'
 export default function generateSvg(metadata: NftMetadata): string {
     const { sentences, name, lastUpdated } = metadata
 
+    const dateStr = lastUpdated.toDateString().split(' ').slice(1).join(' ')
+
     const titleOffset = 30
     const dividerOffset = titleOffset + 20
     const sentenceOffset = dividerOffset + 20
@@ -11,16 +13,16 @@ export default function generateSvg(metadata: NftMetadata): string {
     const fontColor = 'rgb(21, 61, 38)'
     const fontFamily = 'monospace'
     const sentenceSize = 16
-    const sentenceSpaceSize = sentenceSize * 1.1
+    const sentenceSpaceSize = sentenceSize * 1.15
 
     /**********/
     /* Canvas */
     /**********/
-    const canvasWidth = 600
+    const canvasWidth = 550
     const canvasHeight = sentences.length * sentenceSpaceSize + sentenceOffset + titleOffset
     const canvasSvg = `<svg width="${canvasWidth}" height="${canvasHeight}" viewBox="0 0 ${canvasWidth} ${canvasHeight}" xmlns="http://www.w3.org/2000/svg">`
     const backgroundSvg = `<rect width="${canvasWidth}" height="${canvasHeight}" fill="${backgroundColor}" />`
-    const styleSvg = `<style> text { fill: ${fontColor}; font-family: ${fontFamily};}</style>`
+    const styleSvg = `<style> text { fill: ${fontColor}; font-family: ${fontFamily};} .date { fill: rgb(36, 36, 36); font-weight: bold} </style>`
     const defsOpenTag = '<defs>'
     const defsCloseTag = '</defs>'
     const closingSvgTag = `</svg>`
@@ -43,11 +45,25 @@ export default function generateSvg(metadata: NftMetadata): string {
     const sentencesSvgArr = []
 
     for (let i = 0; i < sentences.length; i++) {
-        sentencesSvgArr.push(
-            `<text x="20" y="${sentenceSpaceSize * (i + 1) + sentenceOffset}" font-size="${sentenceSize}">${
-                sentences[i]
-            }</text>`,
-        )
+        const sentence = sentences[i]
+
+        if (sentence.includes('waiting to be interpreted')) {
+            const sentenceArr = sentence.split(' ')
+            const partOne = sentenceArr.slice(0, 4).join(' ')
+            const partTwo = sentenceArr.slice(4).join(' ')
+
+            sentencesSvgArr.push(
+                `<a href="https://evm-translator.xyz/contribute" target="_blank"><text x="20" y="${
+                    sentenceSpaceSize * (i + 1) + sentenceOffset
+                }" font-size="${sentenceSize}">${partOne} <tspan text-decoration="underline">${partTwo}</tspan></text></a>`,
+            )
+        } else {
+            sentencesSvgArr.push(
+                `<text x="20" y="${
+                    sentenceSpaceSize * (i + 1) + sentenceOffset
+                }" font-size="${sentenceSize}">${sentence}</text>`,
+            )
+        }
     }
 
     const sentencesSvg = sentencesSvgArr.join('')
@@ -57,12 +73,13 @@ export default function generateSvg(metadata: NftMetadata): string {
     /**************/
 
     const xCoord = canvasWidth - 140
-    const yCoord = canvasHeight - 50
+    const yCoord = 20
 
-    const xOffset = xCoord + canvasHeight / 2
-    const yOffset = yCoord + canvasWidth / 2
+    // const xOffset = xCoord + canvasHeight / 2
+    // const yOffset = yCoord + canvasWidth / 2
 
-    const dateSvg = `<text x="${0}" y="${0}" transform="translate(${xCoord} ${yCoord}) rotate(-45)">${lastUpdated.toISOString()}</text>`
+    // const dateSvg = `<text x="${0}" y="${0}" transform="translate(${xCoord} ${yCoord}) rotate(-45)" class="date">${dateStr}</text>`
+    const dateSvg = `<a href="https://evm-translator.xyz/contribute"> <text x="${0}" y="${0}" transform="translate(${xCoord} ${yCoord}) rotate(30)" class="date">${dateStr}</text></a>`
 
     // const timeGradientSVG = timeGradientArr.join('')
     /**************/

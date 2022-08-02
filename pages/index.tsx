@@ -281,6 +281,12 @@ function Home({}) {
 
     return (
         <Stack fill="horizontal" className="main-stack">
+            <Head>
+                <title>Logbook</title>
+                <meta property="og:title" content="Logbook" />
+                {/* <meta property="og:description" content={description} /> */}
+                <meta name="twitter:title" content="Logbook" />
+            </Head>
             <Box height="100vh" className="zoom" justify="center">
                 <>{View}</>
                 {/* {animationLoaded ? (

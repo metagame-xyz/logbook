@@ -1,6 +1,4 @@
 import type { AppProps } from 'next/app'
-import dynamic from 'next/dynamic'
-import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 import { datadogRum } from '@datadog/browser-rum'
@@ -18,17 +16,16 @@ import { chains, wagmiClient } from 'utils/rainbowkit'
 import '../styles/globals.css'
 import theme from '../styles/theme'
 
-const bgSize = ['100px', '120px', '220px', '300px']
-
 const customTheme: Theme = darkTheme()
-
 customTheme.fonts.body = 'Lars'
+customTheme.colors.modalBackground = '#FBF7F1'
+customTheme.colors.modalText = '#C84414'
+customTheme.colors.modalTextDim = '#C84414'
+customTheme.colors.accentColorForeground = '#FBF7F1'
+customTheme.colors.accentColor = '#C84414'
+customTheme.colors.modalTextSecondary = 'rgba(0,0,0,0.87)'
 
 function App({ Component, pageProps }: AppProps): JSX.Element {
-    const { route } = useRouter()
-
-    const Layout = dynamic(() => import('components/Layout'))
-
     useEffect(() => {
         datadogRum.init({
             applicationId: DATADOG_RUM_APPLICATION_ID,

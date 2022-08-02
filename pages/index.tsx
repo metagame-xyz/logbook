@@ -7,9 +7,9 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'
 import axios from 'axios'
 import { BigNumber, Contract, ethers, Wallet } from 'ethers'
 import { Avatar, Box, Button, Heading, Image, ResponsiveContext, Stack, Text } from 'grommet'
+import Lottie, { useLottie } from 'lottie-react'
 import { addressToNameObject } from 'onoma'
 import newThing from 'public/static/animations/enigma-small.json'
-import Lottie from 'react-lottie'
 import { useAccount, useEnsName, useProvider, useSigner } from 'wagmi'
 
 import {
@@ -29,19 +29,18 @@ import { maxW } from 'components/Layout'
 import MintButton from 'components/MintButton'
 
 const options = {
-    renderer: 'svg',
     loop: true,
-    autoplay: true,
     animationData: newThing,
-    renderingSettings: {
-        preserveAspectRatio: 'xMidYMid slice',
-    },
 }
 
 function Home({}) {
     // const { provider, signer, userAddress, userName, eventParams, openWeb3Modal, toast } = useEthereum();
     const { address, isConnecting, isDisconnected } = useAccount({ onDisconnect: datadogRum.removeUser })
     const { data: ensName } = useEnsName({ address })
+
+    const { View, animationLoaded } = useLottie(options)
+
+    console.log('loaded', animationLoaded)
 
     useEffect(() => {
         if (address) {
@@ -338,7 +337,15 @@ function Home({}) {
     return (
         <Stack fill="horizontal" className="main-stack">
             <Box height="100vh" className="zoom" justify="center">
-                <Lottie options={options} width="fit-content" />
+                {/* {animationLoaded ? (
+                    <div id="wtfguys">{View}</div>
+                ) : (
+                    <div hidden id="hello">
+                        {View}
+                    </div>
+                )} */}
+                <>{View}</>
+                {/* <Lottie options={options} width="fit-content" /> */}
             </Box>
 
             <Box
@@ -360,13 +367,15 @@ function Home({}) {
                         <Box direction={isMobile ? 'column' : 'row'} gap="medium">
                             <Box basis="2/3">
                                 <Text color="brand">
-                                    Logbook elevator pitch goes here. Lorem ipsum dolor sit amet, consectetur adipiscing
-                                    elit, sunt in culpa qui anim. sed do eiusmod tempor incididunt ut labore et dolore
-                                    magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                                    nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-                                    voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                                    cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                    laborum.
+                                    Welcome to Metagame's latest artifact, Logbook. Like all of our other artifacts,
+                                    you've already been collecting entries as you go about your days. <br />
+                                    <br /> Now you can see your activities reflected and benefit from them in new ways.
+                                    Logbook is an aggregation of all the actions you've taken on-chain in a way you've
+                                    never seen before - in a digestible way that you and other people can understand.
+                                    <br />
+                                    <br />
+                                    After you've minted your Logbook, you'll have access to $5,000 USDC worth of
+                                    bounties to help better interpret on-chain activity.
                                 </Text>
                             </Box>
 
@@ -384,12 +393,19 @@ function Home({}) {
                             <Box gap="medium">
                                 <Image src={`/static/assets/metagameAsciiLogo.svg`} alt="Metagame ASCII logo" />
                                 <Text color="brand">
-                                    Metagame blue sky vision copy goes here. Lorem ipsum dolor sit amet, consectetur
-                                    adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-                                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                    Metagame makes products that express activity and achievements in the ultimate
+                                    metagame - real life - to unlock access to new spaces, spectacles, and spoils.
+                                    <br />
+                                    <br />
+                                    We're creating the environments and tooling needed to foster the emergence of new
+                                    and existing values-based communities by helping them recognize and reward those
+                                    that further their goals. We're starting with NFTs earned from involvement gathered
+                                    from on and off-chain activities and will expand into more expressive mediums like
+                                    inventory and avatars.
+                                    <br />
+                                    <br />
+                                    Each of us was created on earth without our own consent - we didn't hit start, and
+                                    we can't press pause. But we can decide why, how, and where we play.
                                 </Text>
                             </Box>
                             <Image src={`/static/assets/exampleLogbook.svg`} alt="Example logbook" />

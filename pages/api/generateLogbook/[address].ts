@@ -61,7 +61,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
         const nftMetadata: NftMetadata = {
             name: `${userName}'s Logbook`,
             description: 'A compilation of all the transactions this address has been involved in',
-            image: 'failed to load to ipfs',
+            image: `https://${WEBSITE_URL}/printing.png`,
             externalUrl: `https://logbook.themetagame.xyz/logbook/${user.address}`,
             address: user.address,
             userName,

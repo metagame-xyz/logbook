@@ -32,7 +32,7 @@ const getScreenshotOfURL = async (url: string, height: number, width: number) =>
     })
     const page = await browser.newPage()
     await page.goto(url, { waitUntil: 'networkidle0' })
-    await page.evaluate(() => (document.body.style.background = 'transparent'))
+    // await page.evaluate(() => (document.body.style.background = 'transparent'))
     const file = await page.screenshot({ type: 'png', omitBackground: true })
     await browser.close()
     return file

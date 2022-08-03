@@ -50,8 +50,6 @@ function Home({}) {
 
     const { View, animationLoaded } = useLottie(options)
 
-    // console.log('loaded', animationLoaded)
-
     useEffect(() => {
         if (address) {
             datadogRum.setUser({
@@ -93,11 +91,12 @@ function Home({}) {
 
     useEffect(() => {
         const zoomElement = document.querySelector('.zoom') as HTMLElement
-        const baseZoom = isMobile ? 1 : 0.95
+        const BASE_ZOOM = isMobile ? 1.25 : 0.8
 
-        zoomElement.style.transform = `scale(${baseZoom})`
-        let zoom = baseZoom
-        const ZOOM_SPEED = 0.05
+        zoomElement.style.transform = `scale(${BASE_ZOOM})`
+
+        let zoom = BASE_ZOOM
+        const ZOOM_SPEED = isMobile ? 0.2 : 0.05
 
         let xDown = null
         let yDown = null
@@ -109,7 +108,7 @@ function Home({}) {
                 e.preventDefault()
                 zoom += ZOOM_SPEED
                 zoomElement.style.transform = `scale(${zoom})`
-            } else if (e.deltaY < 0 && zoom > baseZoom && !contentLayerElement.scrollTop) {
+            } else if (e.deltaY < 0 && zoom > BASE_ZOOM && !contentLayerElement.scrollTop) {
                 e.preventDefault()
                 zoom -= ZOOM_SPEED
                 zoomElement.style.transform = `scale(${zoom})`
@@ -144,7 +143,7 @@ function Home({}) {
                     e.preventDefault()
                     zoom += ZOOM_SPEED
                     zoomElement.style.transform = `scale(${zoom})`
-                } else if (yDiff < 0 && zoom > baseZoom && !contentLayerElement.scrollTop) {
+                } else if (yDiff < 0 && zoom > BASE_ZOOM && !contentLayerElement.scrollTop) {
                     e.preventDefault()
                     zoom -= ZOOM_SPEED
                     zoomElement.style.transform = `scale(${zoom})`
@@ -159,7 +158,11 @@ function Home({}) {
 
         document.addEventListener('touchstart', handleTouchStart, { passive: false, capture: false })
         document.addEventListener('touchmove', handleTouchMove, { passive: false, capture: false })
-    }, [])
+
+        document.addEventListener('scroll', (e) => {
+            alert(e.target)
+        })
+    }, [isMobile])
 
     useEffect(() => {
         async function getUserMintedTokenId() {
@@ -277,7 +280,7 @@ function Home({}) {
     //     <meta name="twitter:title" content="Logbook" />
     // </Head>
     return (
-        <Stack fill="horizontal" className="main-stack">
+        <Stack fill="horizontal" className="main-stack" interactiveChild={1}>
             <Box height="100vh" className="zoom" justify="center">
                 <>{View}</>
                 {/* {animationLoaded ? (
@@ -291,7 +294,7 @@ function Home({}) {
             </Box>
 
             <Box
-                style={{ marginTop: '100vh' }}
+                style={{ marginTop: `${isMobile ? '80' : '92'}vh` }}
                 pad={isMobile ? 'none' : { horizontal: 'medium', top: 'medium', bottom: 'none' }}
             >
                 <Box
@@ -302,7 +305,7 @@ function Home({}) {
                     gap="large"
                     flex
                 >
-                    <PlusBorder contentContainer={contentContainer} />
+                    {!isMobile ? <PlusBorder contentContainer={contentContainer} /> : null}
                     <Box margin="small" fill gap="large" className="content-container">
                         <Image src="/static/assets/logbookLogo.svg" alt="Logbook Logo" />
                         <Box direction={isMobile ? 'column' : 'row'} gap="medium">
@@ -369,7 +372,7 @@ function Home({}) {
                             <Image src={`/static/assets/exampleLogbook.svg`} alt="Example logbook" />
                         </Box>
                     </Box>
-                    <PlusBorder contentContainer={contentContainer} />
+                    {!isMobile ? <PlusBorder contentContainer={contentContainer} /> : null}
                 </Box>
                 <LgbkLayer show={showMetabotModal} close={() => setShowMetabotModal(false)}>
                     <Text textAlign="center">

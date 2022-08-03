@@ -8,7 +8,7 @@ export const enum MintStatus {
     can_mint = 'Mint for 0.02 ETH',
     minting = 'Minting...',
     minted = 'Minted',
-    metabot = 'Get whitelisted',
+    metabot = 'Get allowlisted',
     processing = 'Processing...',
 }
 
@@ -18,9 +18,6 @@ const MintButton = ({ mintStatus, clickable, action }) => {
     useEffect(() => {
         setActionLabel(mintStatus)
     }, [mintStatus])
-
-    console.log('mintStatus', mintStatus)
-    console.log('actionLabel', actionLabel)
 
     return (
         <div

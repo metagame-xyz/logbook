@@ -48,7 +48,8 @@ export default function createSentences(interpretedData: (Interpretation | null)
 
     const grouped = collect(filteredData).groupBy('actions')
 
-    const data = grouped.all() as unknown as Record<Action, Collection<any>>
+    const data =
+        (grouped?.all() as unknown as Record<Action, Collection<any>>) || ({} as Record<Action, Collection<any>>)
     const actions = getKeys(data)
 
     const names = filteredData.filter(({ fromName, toName }) => (fromName || toName) && 'OPENSEA' !== toName)
@@ -108,8 +109,6 @@ export default function createSentences(interpretedData: (Interpretation | null)
     //     Collection<FilteredData>
     // >
     const mintSentences = []
-    console.log('mints', mints)
-
     let nftMintNames = []
     if (mints && mints.length > 0) {
         const specialMints = mints.filter((tx) => getValues(specialNfts).includes(tx?.contractAddress))
@@ -183,7 +182,6 @@ export default function createSentences(interpretedData: (Interpretation | null)
     // CLAIMED
     const claimed = data.claimed?.all() as unknown as FilteredData[]
     const claimedSentences = []
-    console.log('claimed', claimed)
     if (claimed?.length > 0) {
         for (const [exchange, addresses] of getEntries(knownAddresses)) {
             const txs = claimed.filter((tx) => addresses.includes(tx.contractAddress))

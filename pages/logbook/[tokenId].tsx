@@ -72,10 +72,9 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
                     direction="row"
                     gap="large"
                     flex
-                    className="content-container"
                 >
                     <PlusBorder contentContainer={contentContainer} />
-                    <Box margin="small" fill gap="large">
+                    <Box margin="small" fill gap="large" className="content-container">
                         <Image src="/static/assets/logbookLogo.svg" alt="Logbook Logo" />
                         <Box
                             direction="row"

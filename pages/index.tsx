@@ -301,10 +301,9 @@ function Home({}) {
                     direction="row"
                     gap="large"
                     flex
-                    className="content-container"
                 >
                     <PlusBorder contentContainer={contentContainer} />
-                    <Box margin="small" fill gap="large">
+                    <Box margin="small" fill gap="large" className="content-container">
                         <Image src="/static/assets/logbookLogo.svg" alt="Logbook Logo" />
                         <Box direction={isMobile ? 'column' : 'row'} gap="medium">
                             <Box basis="2/3">
@@ -341,13 +340,15 @@ function Home({}) {
                                 )}
                             </Box>
                         </Box>
+                        <Box margin={{ vertical: 'xlarge' }}>
+                            <Image
+                                src={`/static/assets/pageDivider${isMobile ? 'Mobile' : 'Desktop'}.svg`}
+                                alt="Page divider"
+                            />
+                        </Box>
 
-                        <Image
-                            src={`/static/assets/pageDivider${isMobile ? 'Mobile' : 'Desktop'}.svg`}
-                            alt="Page divider"
-                        />
                         <Box gap="xlarge" direction={isMobile ? 'column' : 'row'} justify="between">
-                            <Box gap="medium">
+                            <Box gap="large">
                                 <Image src={`/static/assets/metagameAsciiLogo.svg`} alt="Metagame ASCII logo" />
                                 <Text color="brand">
                                     Metagame makes products that express activity and achievements in the ultimate

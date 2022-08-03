@@ -8,7 +8,7 @@ export const enum MintStatus {
     can_mint = 'Mint',
     minting = 'Minting...',
     minted = 'Minted',
-    metabot = 'DM Metabot',
+    metabot = 'Get whitelisted',
     processing = 'Processing...',
 }
 

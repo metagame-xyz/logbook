@@ -4,7 +4,7 @@ const theme: ThemeType = {
     button: {
         default: {
             border: {
-                // radius: '0px',
+                radius: '0px',
                 color: 'brand',
             },
             background: {
@@ -14,7 +14,7 @@ const theme: ThemeType = {
         },
         primary: {
             border: {
-                // radius: '0px',
+                radius: '0px',
             },
             background: {
                 color: '#000000',
@@ -22,7 +22,7 @@ const theme: ThemeType = {
         },
         secondary: {
             border: {
-                // radius: '0px',
+                radius: '0px',
                 color: 'brand',
                 width: '1px',
             },

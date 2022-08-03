@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { datadogRum } from '@datadog/browser-rum'
 import { parseEther } from '@ethersproject/units'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import axios from 'axios'
 import { BigNumber, Contract, ethers, Wallet } from 'ethers'
 import { AddressZ } from 'evm-translator/lib/interfaces/utils'
@@ -28,7 +27,9 @@ import logbookAbi from 'utils/logbookAbi'
 import CustomConnectButton from 'components/ConnectButton'
 import { Etherscan, Logo, Opensea, Twitter } from 'components/Icons'
 import { maxW } from 'components/Layout'
+import LgbkLayer from 'components/LgbkLayer'
 import MintButton, { MintStatus } from 'components/MintButton'
+import PlusBorder from 'components/PlusBorder'
 
 const options = {
     loop: true,
@@ -249,20 +250,6 @@ function Home({}) {
         setMintStatus(MintStatus.minted)
     }
 
-    const PlusBorder = () => (
-        <Box
-            align="center"
-            height={`${contentContainer ? contentContainer.clientHeight : 0}px`}
-            style={{ overflowY: 'hidden' }}
-        >
-            {[...Array(100).keys()].map((i) => (
-                <Text key={i} color="brand">
-                    +
-                </Text>
-            ))}
-        </Box>
-    )
-
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     let mintButtonAction = () => {}
     switch (mintStatus) {
@@ -316,77 +303,10 @@ function Home({}) {
                     flex
                     className="content-container"
                 >
-                    <PlusBorder />
+                    <PlusBorder contentContainer={contentContainer} />
                     <Box margin="small" fill gap="large">
                         <Image src="/static/assets/logbookLogo.svg" alt="Logbook Logo" />
                         <Box direction={isMobile ? 'column' : 'row'} gap="medium">
-                            {showMetabotModal && (
-                                <Layer
-                                    id="Metabot"
-                                    position="center"
-                                    onClickOutside={() => setShowMetabotModal(false)}
-                                    onEsc={() => setShowMetabotModal(false)}
-                                    background="transparent"
-                                >
-                                    <Box
-                                        background="backgroundLight"
-                                        width="medium"
-                                        height="medium"
-                                        round="large"
-                                        justify="center"
-                                        align="center"
-                                        pad="medium"
-                                    >
-                                        Looks like your ENS isn't on the allowlist yet. Send your ENS to Metabot, our
-                                        Telegram bot, and they'll get you on there!
-                                        <Image src="/metabot_small.png" alt="Metabot Head" height="84px" />
-                                        <Button
-                                            size="medium"
-                                            secondary
-                                            label="Metabot"
-                                            margin="6px"
-                                            href="https://t.me/the_meta_bot"
-                                            target="_blank"
-                                        />
-                                    </Box>
-                                </Layer>
-                            )}
-                            {showProcessingModal && (
-                                <Layer
-                                    id="processing"
-                                    position="center"
-                                    onClickOutside={() => setShowProcessingModal(false)}
-                                    onEsc={() => setShowProcessingModal(false)}
-                                    background="transparent"
-                                >
-                                    <Box
-                                        background="backgroundLight"
-                                        width="medium"
-                                        height="medium"
-                                        round="large"
-                                        justify="center"
-                                        align="center"
-                                        pad="medium"
-                                    >
-                                        Your on-chain data is being retrieved and processed by evm-translator. Metabot
-                                        will send you a DM when it's ready! <br />
-                                        <br />
-                                        {/* In the meantime, you can check out more about evm-translator
-                                        <a href="https://evm-translator.xyz/contribute" target="_blank">
-                                            here
-                                        </a> */}
-                                        There are $5,000 worth of bounties available to help improve evm-translator.
-                                        <Button
-                                            size="medium"
-                                            secondary
-                                            label="Go Bounty Hunting"
-                                            margin="12px"
-                                            href="https://evm-translator.xyz/contribute"
-                                            target="_blank"
-                                        />
-                                    </Box>
-                                </Layer>
-                            )}
                             <Box basis="2/3">
                                 <Text color="brand">
                                     Welcome to Metagame's latest artifact, Logbook. Like all of our other artifacts,
@@ -426,7 +346,7 @@ function Home({}) {
                             src={`/static/assets/pageDivider${isMobile ? 'Mobile' : 'Desktop'}.svg`}
                             alt="Page divider"
                         />
-                        <Box gap="medium" direction={isMobile ? 'column' : 'row'} justify="between">
+                        <Box gap="xlarge" direction={isMobile ? 'column' : 'row'} justify="between">
                             <Box gap="medium">
                                 <Image src={`/static/assets/metagameAsciiLogo.svg`} alt="Metagame ASCII logo" />
                                 <Text color="brand">
@@ -448,56 +368,44 @@ function Home({}) {
                             <Image src={`/static/assets/exampleLogbook.svg`} alt="Example logbook" />
                         </Box>
                     </Box>
-                    <PlusBorder />
+                    <PlusBorder contentContainer={contentContainer} />
                 </Box>
-            </Box>
-            {/* <Box px={8} py={8} width="fit-content" margin="auto" maxW={maxW}>
-                <SimpleGrid columns={[1, 1, 1, 3]} spacing={16}>
-                <About heading={copy.heading1} text={copy.text1} />
-                <About heading={copy.heading2} text={copy.text2} />
-                <About heading={copy.heading3} text={copy.text3} />
-                </SimpleGrid>
-            </Box> */}
-
-            {/* <VStack justifyContent="center" spacing={4} px={4} py={8} bgColor="brand.700">
-            {!minted && !userTokenId ? (
-                <Button
-                onClick={userAddress ? mint : () => openWeb3Modal('Main Page Section')}
-                isLoading={minting}
-                loadingText="Minting..."
-                isDisabled={minted}
-                fontWeight="normal"
-                colorScheme="brand"
-                bgColor="brand.600"
-                // color="brand.900"
-                _hover={{ bg: 'brand.500' }}
-                size="lg"
-                height="60px"
-                minW="xs"
-                boxShadow="lg"
-                fontSize="4xl"
-                borderRadius="full">
-                {userAddress ? mintText() : 'Connect Wallet'}
-                </Button>
-                ) : (
-                    <Box fontSize={[24, 24, 36]} color="white">
-                    <Text>{`${userName}'s ${copy.title} (#${userTokenId}) has been minted.`}</Text>
+                <LgbkLayer show={showMetabotModal} close={() => setShowMetabotModal(false)}>
+                    <Text textAlign="center">
+                        Looks like your ENS isn't on the allowlist yet. Send your ENS to our Telegram bot, Metabot, and
+                        they'll get you on there!
+                    </Text>
+                    <Image src="/metabot_small.png" alt="Metabot Head" height="84px" />
                     <Button
-                    colorScheme="brand"
-                    color="white"
-                    variant="outline"
-                    _hover={{ bgColor: 'brand.600' }}
-                    _active={{ bgColor: 'brand.500' }}
-                    mt={2}
-                    size="lg"
-                    rightIcon={<ExternalLinkIcon />}
-                    onClick={() => window.open(heartbeatShowerLink(userTokenId))}>
-                    View your Heartbeat
-                    </Button>
-                    </Box>
-                    )}
-                    {textUnderButton()}
-                </VStack> */}
+                        size="medium"
+                        secondary
+                        label="DM Metabot"
+                        margin="6px"
+                        href="https://t.me/the_meta_bot"
+                        target="_blank"
+                    />
+                </LgbkLayer>
+                <LgbkLayer show={showProcessingModal} close={() => setShowProcessingModal(false)}>
+                    <Text textAlign="center">
+                        Your on-chain data is being retrieved and processed by evm-translator. Metabot will send you a
+                        DM when it's ready! <br />
+                        <br />
+                        {/* In the meantime, you can check out more about evm-translator
+                                        <a href="https://evm-translator.xyz/contribute" target="_blank">
+                                            here
+                                        </a> */}
+                        There are $5,000 worth of bounties available to help improve evm-translator.
+                    </Text>
+                    <Button
+                        size="medium"
+                        secondary
+                        label="Go Bounty Hunting"
+                        margin="12px"
+                        href="https://evm-translator.xyz/contribute"
+                        target="_blank"
+                    />
+                </LgbkLayer>
+            </Box>
         </Stack>
     )
 }

@@ -47,13 +47,14 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
     }, [])
 
     async function downloadPngBlob() {
-        const file = await fetch(
-            `/api/screenshot?url=${clickableIPFSLink(image)}&width=${width}&height=${height}`,
-        ).then((res) => res.blob())
-
-        const url = URL.createObjectURL(file)
+        const { pngUrl } = await fetch(
+            `/api/screenshot?tokenId=${tokenId}}&width=${width * 2}&height=${height * 2}`,
+        ).then((res) => res.json())
+        // const { pngUrl } = await fetch(
+        //     `/api/screenshot?url=${clickableIPFSLink(image)}&width=${width}&height=${height}`,
+        // ).then((res) => res.json())
         const a = document.createElement('a')
-        a.href = url
+        a.href = pngUrl
         a.download = `${name}.png`
         document.body.appendChild(a)
         a.click()

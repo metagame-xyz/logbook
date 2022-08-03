@@ -4,8 +4,11 @@ import { URL_BOX_API_SECRET, URLBOX_API_KEY } from './constants'
 
 export async function activateUrlbox(tokenId: string, height: number, width: number): Promise<string> {
     const urlbox = Urlbox(URLBOX_API_KEY, URL_BOX_API_SECRET)
+
+    const envStr = process.env.VERCEL_ENV === 'production' ? '' : '-dev'
+
     const baseOptions = {
-        url: `https://logbook-dev.themetagame.xyz/toScreenshot/${tokenId}`,
+        url: `https://logbook${envStr}.themetagame.xyz/toScreenshot/${tokenId}`,
         unique: Math.random(),
         format: 'png',
         quality: 100,

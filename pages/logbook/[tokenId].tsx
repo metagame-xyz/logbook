@@ -46,19 +46,20 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
         setContentContainer(document.querySelector('.content-container') as HTMLElement)
     }, [])
 
-    async function downloadPngBlob() {
+    const tokenIdStr = tokenId.toString()
+    console.log('tokenIdStr', tokenIdStr)
+    async function downloadPngFromUrl() {
         const { pngUrl } = await fetch(
-            `/api/screenshot?tokenId=${tokenId}}&width=${width * 2}&height=${height * 2}`,
+            `/api/screenshot?tokenId=${tokenId}&width=${width * 2}&height=${height * 2}`,
         ).then((res) => res.json())
-        // const { pngUrl } = await fetch(
-        //     `/api/screenshot?url=${clickableIPFSLink(image)}&width=${width}&height=${height}`,
-        // ).then((res) => res.json())
+
+        const file = await fetch(pngUrl).then((res) => res.blob())
+        const fileUrl = URL.createObjectURL(file)
+
         const a = document.createElement('a')
-        a.href = pngUrl
-        a.download = `${name}.png`
-        document.body.appendChild(a)
+        a.href = fileUrl
+        a.download = `${tokenIdStr}.png`
         a.click()
-        a.remove()
     }
 
     return (
@@ -89,7 +90,7 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
                                 label="View on OpenSea"
                                 onClick={() => window.open(getOpenSeaUrl(tokenId.toString()))}
                             />
-                            <Button secondary label="Download" onClick={() => downloadPngBlob()} />
+                            <Button secondary label="Download" onClick={() => downloadPngFromUrl()} />
                         </Box>
                         <Box>
                             <Head>

@@ -1,5 +1,31 @@
 import { NftMetadata } from './models'
 
+export const getSize = (metadata: NftMetadata): { width: number; height: number } => {
+    const { sentences, name, userName } = metadata
+
+    const deployoooooor = sentences.find((s) => s.split(' ')[0] === 'deployed')
+
+    const titleOffset = 30
+    const dividerOffset = titleOffset + 20
+    const sentenceOffset = dividerOffset + 20
+
+    const backgroundColor = 'rgb(251, 247, 241)' //FBF7F1 light beige
+    const green = 'rgb(21, 61, 38)' //163D26
+    const orange = 'rgb(200, 68, 20)' //C84414
+    const fontColor = deployoooooor ? green : orange
+    const fontFamily = 'monospace'
+    const sentenceSize = 16
+    const sentenceSpaceSize = sentenceSize * 1.15
+
+    /**********/
+    /* Canvas */
+    /**********/
+    const canvasWidth = 550
+    const canvasHeight = sentences.length * sentenceSpaceSize + sentenceOffset + titleOffset
+
+    return { width: canvasWidth, height: canvasHeight }
+}
+
 export default function generateSvg(metadata: NftMetadata): string {
     const { sentences, name, lastUpdated, userName } = metadata
 

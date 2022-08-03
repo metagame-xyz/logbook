@@ -6,7 +6,7 @@ import { Box, Button, Image } from 'grommet'
 
 import { LOGBOOK_CONTRACT_ADDRESS } from 'utils/constants'
 import { clickableIPFSLink } from 'utils/frontend'
-import generateSvg from 'utils/generateSvg'
+import { getSize } from 'utils/generateSvg'
 import logbookMongoose from 'utils/logbookMongoose'
 
 export const getServerSideProps = async (context) => {
@@ -27,23 +27,43 @@ export const getServerSideProps = async (context) => {
 function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const { name, tokenId, image, description } = metadata
 
+    const { width, height } = getSize(metadata)
+
     const getOpenSeaUrl = (tokenId: string) => {
         return `https://opensea.io/assets/${LOGBOOK_CONTRACT_ADDRESS}/${tokenId}`
     }
     console.log(clickableIPFSLink(image))
     const size = ['80vw']
 
-    // async function download() {
-    //     const canvas = document.getElementById('canvas') as HTMLCanvasElement
-    //     const ctx = canvas.getContext('2d')
-    //     const v = Canvg.fromString(ctx, svgString)
-    //     v.start()
-    //     const png = canvas.toDataURL('image/png')
-    //     const link = document.createElement('a')
-    //     link.download = `${name}.png`
-    //     link.href = png
-    //     link.click()
-    // }
+    async function downloadPngBlob() {
+        const file = await fetch(
+            `/api/screenshot?url=${clickableIPFSLink(image)}&width=${width}&height=${height}`,
+        ).then((res) => res.blob())
+
+        const url = URL.createObjectURL(file)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `${name}.png`
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+
+        // console.log('file', file)
+        // const url = URL.createObjectURL(file)
+        // const img = document.createElement('img')
+        // img.src = url
+        // console.log('url', img)
+        // const a = document.createElement('a')
+        // a.href = url
+        // a.download = `${name}.png`
+        // document.body.appendChild(a)
+        // a.click()
+        // a.remove()
+
+        // link.download = `${name}.png`
+        // link.href = png
+        // link.click()
+    }
 
     return (
         <Box>
@@ -60,7 +80,7 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
             <Image src={clickableIPFSLink(image)} alt={name} />
             <Box>
                 <Button label="View on OpenSea" onClick={() => window.open(getOpenSeaUrl(tokenId.toString()))} />
-                <Button primary label="Download" />
+                <Button primary label="Download" onClick={() => downloadPngBlob()} />
             </Box>
         </Box>
     )

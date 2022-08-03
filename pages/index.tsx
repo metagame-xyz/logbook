@@ -209,35 +209,41 @@ function Home({}) {
     const mint = async () => {
         // const provider = new ethers.providers.Web3Provider(provider)
         // const signer = provider.getSigner()
+        const previousMintStatus = mintStatus
         setMintStatus(MintStatus.minting)
 
-        const tx = await contractWithSigner.mintWithSignature(
-            address,
-            expandedSignature.v,
-            expandedSignature.r,
-            expandedSignature.s,
-            {
-                gasLimit: 2100000,
-                gasPrice: 8000000000,
-                value: parseEther('0.01'),
-            },
-        )
-        const txReceipt = await tx.wait()
-        const [fromAddress, toAddress, tokenId] = txReceipt.events.find((e) => (e.event = 'Transfer')).args as [
-            string,
-            string,
-            BigNumber,
-        ]
+        try {
+            const tx = await contractWithSigner.mintWithSignature(
+                address,
+                expandedSignature.v,
+                expandedSignature.r,
+                expandedSignature.s,
+                {
+                    gasLimit: 2100000,
+                    gasPrice: 8000000000,
+                    value: parseEther('0.01'),
+                },
+            )
+            const txReceipt = await tx.wait()
+            const [fromAddress, toAddress, tokenId] = txReceipt.events.find((e) => (e.event = 'Transfer')).args as [
+                string,
+                string,
+                BigNumber,
+            ]
 
-        datadogRum.addAction('mint success', {
-            txHash: tx.hash,
-            tokenId: tokenId.toString(),
-        })
+            datadogRum.addAction('mint success', {
+                txHash: tx.hash,
+                tokenId: tokenId.toString(),
+            })
 
-        console.log('Transaction:', tx.hash)
+            console.log('Transaction:', tx.hash)
 
-        setUserTokenId(tokenId.toNumber())
-        setMintStatus(MintStatus.minted)
+            setUserTokenId(tokenId.toNumber())
+            setMintStatus(MintStatus.minted)
+        } catch (error) {
+            console.error(error)
+            setMintStatus(previousMintStatus)
+        }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function

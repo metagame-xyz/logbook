@@ -74,6 +74,7 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
                     direction="row"
                     gap="large"
                     flex
+                    style={{ minHeight: '100vh' }}
                 >
                     <PlusBorder contentContainer={contentContainer} />
                     <Box

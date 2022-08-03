@@ -21,7 +21,7 @@ export default function Footer(props) {
                 >
                     <TwelveCircles />
                     <Text textAlign="center" size="xsmall">
-                        {isMobile ? '' : 'The '} Metagame
+                        Metagame
                     </Text>
                 </Box>
             </Box>

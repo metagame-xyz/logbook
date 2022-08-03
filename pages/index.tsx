@@ -296,7 +296,7 @@ const Home = () => {
                 </Box>
                 <Box>
                     <Box style={{ height: `${isMobile ? '80' : '92'}vh` }} />
-                    <Box pad={isMobile ? 'none' : { horizontal: 'medium', top: 'medium', bottom: 'none' }}>
+                    <Box pad={isMobile ? 'none' : 'medium'}>
                         <Box
                             background="backgroundLight"
                             round={isMobile ? 'none' : 'small'}

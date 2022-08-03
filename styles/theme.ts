@@ -1,6 +1,4 @@
-import { ThemeType } from 'grommet'
-
-const theme: ThemeType = {
+const theme = {
     button: {
         default: {
             border: {

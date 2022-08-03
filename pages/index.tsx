@@ -1,32 +1,21 @@
 import Head from 'next/head'
 import React, { useContext, useEffect, useState } from 'react'
 
-import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { datadogRum } from '@datadog/browser-rum'
 import { parseEther } from '@ethersproject/units'
 import axios from 'axios'
-import { BigNumber, Contract, ethers, Wallet } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { AddressZ } from 'evm-translator/lib/interfaces/utils'
-import { Avatar, Box, Button, Heading, Image, Layer, ResponsiveContext, Stack, Text } from 'grommet'
-import Lottie, { useLottie } from 'lottie-react'
-import { addressToNameObject } from 'onoma'
-import newThing from 'public/static/animations/enigma-2.json'
+import { Box, Button, Image, ResponsiveContext, Stack, Text } from 'grommet'
+import { useLottie } from 'lottie-react'
+import newThing from 'public/static/animations/enigma-small.json'
 import { useAccount, useEnsName, useNetwork, useProvider, useSigner } from 'wagmi'
 
-import {
-    ALCHEMY_PROJECT_ID,
-    blackholeAddress,
-    LOGBOOK_CONTRACT_ADDRESS,
-    networkStrings,
-    WEBSITE_URL,
-} from 'utils/constants'
-import { copy } from 'utils/content'
-import { debug, event } from 'utils/frontend'
+import { blackholeAddress, LOGBOOK_CONTRACT_ADDRESS } from 'utils/constants'
 import logbookAbi from 'utils/logbookAbi'
 
 import CustomConnectButton from 'components/ConnectButton'
 import { Etherscan, Logo, Opensea, Twitter } from 'components/Icons'
-import { maxW } from 'components/Layout'
 import LgbkLayer from 'components/LgbkLayer'
 import MintButton, { MintStatus } from 'components/MintButton'
 import PlusBorder from 'components/PlusBorder'
@@ -60,11 +49,10 @@ function Home({}) {
     }, [address])
 
     const provider = useProvider()
-    const { data: signer, isError, isLoading } = useSigner()
+    const { data: signer } = useSigner()
     const contract = new ethers.Contract(LOGBOOK_CONTRACT_ADDRESS, logbookAbi, provider)
     const contractWithSigner = contract.connect(signer)
 
-    const [allowlistLoading, setAllowlistLoading] = useState(false)
     const [expandedSignature, setExpandedSignature] = useState({ v: null, r: null, s: null })
     const [contentContainer, setContentContainer] = useState<HTMLElement | null>(null)
     const [mintStatus, setMintStatus] = useState<MintStatus>(MintStatus.unknown)
@@ -188,7 +176,6 @@ function Home({}) {
                 }
 
                 if (address && localMintStatus !== MintStatus.minted) {
-                    setAllowlistLoading(true)
                     ;({ allowlist, signature, errorCode } = await axios
                         .get(`/api/premintCheck/${address}`)
                         .then((res) => res.data))
@@ -214,7 +201,6 @@ function Home({}) {
                 // toast(toastErrorData('Get User Minted Token Error', JSON.stringify(error)))
             } finally {
                 setUserTokenId(tokenId)
-                setAllowlistLoading(false)
                 setExpandedSignature(signature)
                 setMintStatus(localMintStatus)
             }
@@ -225,35 +211,42 @@ function Home({}) {
     const mint = async () => {
         // const provider = new ethers.providers.Web3Provider(provider)
         // const signer = provider.getSigner()
+        const previousMintStatus = mintStatus
+        setMintStatus(MintStatus.minting)
 
-        const tx = await contractWithSigner.mintWithSignature(
-            address,
-            expandedSignature.v,
-            expandedSignature.r,
-            expandedSignature.s,
-            {
-                gasLimit: 2100000,
-                gasPrice: 8000000000,
-                value: ethers.utils.parseEther('0.01'),
-            },
-        )
-        const txReceipt = await tx.wait()
-        const [fromAddress, toAddress, tokenId] = txReceipt.events.find((e) => (e.event = 'Transfer')).args as [
-            string,
-            string,
-            BigNumber,
-        ]
+        try {
+            const tx = await contractWithSigner.mintWithSignature(
+                address,
+                expandedSignature.v,
+                expandedSignature.r,
+                expandedSignature.s,
+                {
+                    gasLimit: 2100000,
+                    gasPrice: 8000000000,
+                    value: parseEther('0.01'),
+                },
+            )
+            const txReceipt = await tx.wait()
+            const [fromAddress, toAddress, tokenId] = txReceipt.events.find((e) => (e.event = 'Transfer')).args as [
+                string,
+                string,
+                BigNumber,
+            ]
 
-        datadogRum.addAction('mint success', {
-            txHash: tx.hash,
-            tokenId: tokenId.toString(),
-        })
+            datadogRum.addAction('mint success', {
+                txHash: tx.hash,
+                tokenId: tokenId.toString(),
+            })
 
-        console.log('Transaction:', tx.hash)
+            console.log('Transaction:', tx.hash)
 
-        setUserTokenId(tokenId.toNumber())
-        setMintStatus(MintStatus.minted)
-        setShowMintedModal(true)
+            setUserTokenId(tokenId.toNumber())
+            setMintStatus(MintStatus.minted)
+            setShowMintedModal(true)
+        } catch (error) {
+            console.error(error)
+            setMintStatus(previousMintStatus)
+        }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -276,17 +269,18 @@ function Home({}) {
 
     const clickable = [MintStatus.can_mint, MintStatus.metabot, MintStatus.processing].includes(mintStatus)
 
-    // <Head>
-    //     <title>Logbook</title>
-    //     <meta property="og:title" content="Logbook" />
-    //     {/* <meta property="og:description" content={description} /> */}
-    //     <meta name="twitter:title" content="Logbook" />
-    // </Head>
     return (
-        <Stack fill="horizontal" className="main-stack" interactiveChild={1}>
-            <Box height="100vh" className="zoom" justify="center">
-                <>{View}</>
-                {/* {animationLoaded ? (
+        <>
+            <Head>
+                <title>Logbook</title>
+                <meta property="og:title" content="Logbook" />
+                {/* <meta property="og:description" content={description} /> */}
+                <meta name="twitter:title" content="Logbook" />
+            </Head>
+            <Stack fill="horizontal" className="main-stack" interactiveChild={1}>
+                <Box height="100vh" className="zoom" justify="center">
+                    <>{View}</>
+                    {/* {animationLoaded ? (
                     <div id="wtfguys">{View}</div>
                 ) : (
                     <div hidden id="hello">

@@ -1,8 +1,9 @@
 import { NextApiHandler } from 'next'
 
 import chrome from 'chrome-aws-lambda'
-// import puppeteer from 'puppeteer-core'
-import puppeteer from 'puppeteer'
+import puppeteer from 'puppeteer-core'
+
+// import puppeteer from 'puppeteer'
 
 const api: NextApiHandler = async (req, res) => {
     const { url, height, width } = req.query as { url: string; height: string; width: string }

@@ -73,6 +73,7 @@ function Home({}) {
 
     const [showMetabotModal, setShowMetabotModal] = useState(false)
     const [showProcessingModal, setShowProcessingModal] = useState(false)
+    const [showMintedModal, setShowMintedModal] = useState(false)
 
     // let cantMintReason = null
 
@@ -252,6 +253,7 @@ function Home({}) {
 
         setUserTokenId(tokenId.toNumber())
         setMintStatus(MintStatus.minted)
+        setShowMintedModal(true)
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -336,8 +338,7 @@ function Home({}) {
                                         <Button
                                             alignSelf="center"
                                             secondary
-                                            label={`see your Logbook`}
-                                            style={{ border: 'none' }}
+                                            label={`See your Logbook`}
                                             href={`/logbook/${userTokenId}`}
                                         /> // TODO this should
                                     )}
@@ -408,6 +409,10 @@ function Home({}) {
                             href="https://evm-translator.xyz/contribute"
                             target="_blank"
                         />
+                    </LgbkLayer>
+                    <LgbkLayer show={showMintedModal} close={() => setShowMintedModal(false)}>
+                        <Text textAlign="center">Congrats! You&apos;ve successfully minted your Logbook.</Text>
+                        <Button primary label="See your Logbook" href={`/logbook/${userTokenId}`} target="_blank" />
                     </LgbkLayer>
                 </Box>
             </Box>

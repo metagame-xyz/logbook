@@ -15,6 +15,7 @@ import { blackholeAddress, LOGBOOK_CONTRACT_ADDRESS } from 'utils/constants'
 import logbookAbi from 'utils/logbookAbi'
 
 import CustomConnectButton from 'components/ConnectButton'
+import Footer from 'components/Footer'
 import { Etherscan, Logo, Opensea, Twitter } from 'components/Icons'
 import LgbkLayer from 'components/LgbkLayer'
 import MintButton, { MintStatus } from 'components/MintButton'
@@ -366,6 +367,7 @@ const Home = () => {
                                     </Box>
                                     <Image src={`/static/assets/exampleLogbook.svg`} alt="Example logbook" />
                                 </Box>
+                                <Footer />
                             </Box>
                             {!isMobile ? <PlusBorder contentContainer={contentContainer} /> : null}
                         </Box>

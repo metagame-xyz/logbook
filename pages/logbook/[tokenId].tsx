@@ -10,6 +10,7 @@ import { clickableIPFSLink } from 'utils/frontend'
 import { getSize } from 'utils/generateSvg'
 import logbookMongoose from 'utils/logbookMongoose'
 
+import Footer from 'components/Footer'
 import PlusBorder from 'components/PlusBorder'
 
 export const getServerSideProps = async (context) => {
@@ -121,6 +122,7 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
                                 </Box>
                             </CardBody>
                         </Card>
+                        <Footer />
                     </Box>
                     <PlusBorder contentContainer={contentContainer} />
                 </Box>

@@ -15,6 +15,7 @@ import { blackholeAddress, LOGBOOK_CONTRACT_ADDRESS } from 'utils/constants'
 import logbookAbi from 'utils/logbookAbi'
 
 import CustomConnectButton from 'components/ConnectButton'
+import Footer from 'components/Footer'
 import { Etherscan, Logo, Opensea, Twitter } from 'components/Icons'
 import LgbkLayer from 'components/LgbkLayer'
 import MintButton, { MintStatus } from 'components/MintButton'
@@ -25,7 +26,7 @@ const options = {
     animationData: newThing,
 }
 
-function Home({}) {
+const Home = () => {
     // const { provider, signer, userAddress, userName, eventParams, openWeb3Modal, toast } = useEthereum();
     const {
         address: uncleanAddress,
@@ -61,6 +62,7 @@ function Home({}) {
 
     const [showMetabotModal, setShowMetabotModal] = useState(false)
     const [showProcessingModal, setShowProcessingModal] = useState(false)
+    const [showMintedModal, setShowMintedModal] = useState(false)
 
     // let cantMintReason = null
 
@@ -88,6 +90,8 @@ function Home({}) {
 
         let xDown = null
         let yDown = null
+
+        let hasContentAppeared = false // fix for ios safari scroll bug
 
         const handleWheel = (e) => {
             const svgElement = document.querySelector('.zoom')?.querySelector('g')
@@ -131,10 +135,13 @@ function Home({}) {
                     e.preventDefault()
                     zoom += ZOOM_SPEED
                     zoomElement.style.transform = `scale(${zoom})`
-                } else if (yDiff < 0 && zoom > BASE_ZOOM && !contentLayerElement.scrollTop) {
+                } else if (yDiff < 0 && zoom > BASE_ZOOM && !contentLayerElement.scrollTop && !hasContentAppeared) {
                     e.preventDefault()
                     zoom -= ZOOM_SPEED
                     zoomElement.style.transform = `scale(${zoom})`
+                } else if (window.innerHeight <= svgElement.getBoundingClientRect().height) {
+                    // don't allow any more zooming out after content shows up
+                    hasContentAppeared = true
                 }
             }
             /* reset values */
@@ -146,10 +153,6 @@ function Home({}) {
 
         document.addEventListener('touchstart', handleTouchStart, { passive: false, capture: false })
         document.addEventListener('touchmove', handleTouchMove, { passive: false, capture: false })
-
-        document.addEventListener('scroll', (e) => {
-            alert(e.target)
-        })
     }, [isMobile])
 
     useEffect(() => {
@@ -240,6 +243,7 @@ function Home({}) {
 
             setUserTokenId(tokenId.toNumber())
             setMintStatus(MintStatus.minted)
+            setShowMintedModal(true)
         } catch (error) {
             console.error(error)
             setMintStatus(previousMintStatus)
@@ -259,12 +263,17 @@ function Home({}) {
             mintButtonAction = () => setShowProcessingModal(true)
             break
         case MintStatus.minted:
+            mintButtonAction = () => {
+                window.open(`/logbook/${userTokenId}`, '_blank')
+            }
         case MintStatus.unknown:
         default:
             break
     }
 
-    const clickable = [MintStatus.can_mint, MintStatus.metabot, MintStatus.processing].includes(mintStatus)
+    const clickable = [MintStatus.can_mint, MintStatus.metabot, MintStatus.processing, MintStatus.minted].includes(
+        mintStatus,
+    )
 
     return (
         <>
@@ -286,124 +295,122 @@ function Home({}) {
                 )} */}
                     {/* <Lottie options={options} width="fit-content" /> */}
                 </Box>
+                <Box>
+                    <Box style={{ height: `${isMobile ? '80' : '92'}vh` }} />
+                    <Box pad={isMobile ? 'none' : 'medium'}>
+                        <Box
+                            background="backgroundLight"
+                            round={isMobile ? 'none' : 'small'}
+                            pad="small"
+                            direction="row"
+                            gap="large"
+                            flex
+                        >
+                            {!isMobile ? <PlusBorder contentContainer={contentContainer} /> : null}
+                            <Box margin="small" fill gap="large" className="content-container">
+                                <Image src="/static/assets/logbookLogo.svg" alt="Logbook Logo" />
+                                <Box direction={isMobile ? 'column' : 'row'} gap="medium">
+                                    <Box basis="2/3">
+                                        <Text color="brand">
+                                            Welcome to Metagame's latest artifact, Logbook. Like all of our other
+                                            artifacts, you've already been collecting entries as you go about your days.{' '}
+                                            <br />
+                                            <br /> Now you can see your activities reflected and benefit from them in
+                                            new ways. Logbook is an aggregation of all the actions you've taken on-chain
+                                            in a way you've never seen before - in a digestible way that you and other
+                                            people can understand.
+                                            <br />
+                                            <br />
+                                            After you've minted your Logbook, you'll have access to $5,000 USDC worth of
+                                            bounties to help better interpret on-chain activity.
+                                        </Text>
+                                    </Box>
 
-                <Box
-                    style={{ marginTop: `${isMobile ? '80' : '92'}vh` }}
-                    pad={isMobile ? 'none' : { horizontal: 'medium', top: 'medium', bottom: 'none' }}
-                >
-                    <Box
-                        background="backgroundLight"
-                        round={isMobile ? 'none' : 'small'}
-                        pad="small"
-                        direction="row"
-                        gap="large"
-                        flex
-                    >
-                        {!isMobile ? <PlusBorder contentContainer={contentContainer} /> : null}
-                        <Box margin="small" fill gap="large" className="content-container">
-                            <Image src="/static/assets/logbookLogo.svg" alt="Logbook Logo" />
-                            <Box direction={isMobile ? 'column' : 'row'} gap="medium">
-                                <Box basis="2/3">
-                                    <Text color="brand">
-                                        Welcome to Metagame's latest artifact, Logbook. Like all of our other artifacts,
-                                        you've already been collecting entries as you go about your days. <br />
-                                        <br /> Now you can see your activities reflected and benefit from them in new
-                                        ways. Logbook is an aggregation of all the actions you've taken on-chain in a
-                                        way you've never seen before - in a digestible way that you and other people can
-                                        understand.
-                                        <br />
-                                        <br />
-                                        After you've minted your Logbook, you'll have access to $5,000 USDC worth of
-                                        bounties to help better interpret on-chain activity.
-                                    </Text>
+                                    <Box align="end" gap="medium" basis="1/3">
+                                        <CustomConnectButton />
+                                        {mintStatus !== MintStatus.unknown && (
+                                            <MintButton
+                                                mintStatus={mintStatus}
+                                                clickable={clickable}
+                                                action={mintButtonAction}
+                                            />
+                                        )}
+                                    </Box>
+                                </Box>
+                                <Box margin={{ vertical: 'xlarge' }}>
+                                    <Image
+                                        src={`/static/assets/pageDivider${isMobile ? 'Mobile' : 'Desktop'}.svg`}
+                                        alt="Page divider"
+                                    />
                                 </Box>
 
-                                <Box align="end" gap="medium" basis="1/3">
-                                    <CustomConnectButton />
-                                    {mintStatus !== MintStatus.unknown && (
-                                        <MintButton
-                                            mintStatus={mintStatus}
-                                            clickable={clickable}
-                                            action={mintButtonAction}
-                                        />
-                                    )}
-                                    {mintStatus === MintStatus.minted && (
-                                        <Button
-                                            alignSelf="center"
-                                            secondary
-                                            label={`see your Logbook`}
-                                            style={{ border: 'none' }}
-                                            href={`/logbook/${userTokenId}`}
-                                        /> // TODO this should
-                                    )}
+                                <Box gap="xlarge" direction={isMobile ? 'column' : 'row'} justify="between">
+                                    <Box gap="large">
+                                        <Image src={`/static/assets/metagameAsciiLogo.svg`} alt="Metagame ASCII logo" />
+                                        <Text color="brand">
+                                            Metagame makes products that express activity and achievements in the
+                                            ultimate metagame - real life - to unlock access to new spaces, spectacles,
+                                            and spoils.
+                                            <br />
+                                            <br />
+                                            We're creating the environments and tooling needed to foster the emergence
+                                            of new and existing values-based communities by helping them recognize and
+                                            reward those that further their goals. We're starting with NFTs earned from
+                                            involvement gathered from on and off-chain activities and will expand into
+                                            more expressive mediums like inventory and avatars.
+                                            <br />
+                                            <br />
+                                            Each of us was created on earth without our own consent - we didn't hit
+                                            start, and we can't press pause. But we can decide why, how, and where we
+                                            play.
+                                        </Text>
+                                    </Box>
+                                    <Image src={`/static/assets/exampleLogbook.svg`} alt="Example logbook" />
                                 </Box>
+                                <Footer />
                             </Box>
-                            <Box margin={{ vertical: 'xlarge' }}>
-                                <Image
-                                    src={`/static/assets/pageDivider${isMobile ? 'Mobile' : 'Desktop'}.svg`}
-                                    alt="Page divider"
-                                />
-                            </Box>
-
-                            <Box gap="xlarge" direction={isMobile ? 'column' : 'row'} justify="between">
-                                <Box gap="large">
-                                    <Image src={`/static/assets/metagameAsciiLogo.svg`} alt="Metagame ASCII logo" />
-                                    <Text color="brand">
-                                        Metagame makes products that express activity and achievements in the ultimate
-                                        metagame - real life - to unlock access to new spaces, spectacles, and spoils.
-                                        <br />
-                                        <br />
-                                        We're creating the environments and tooling needed to foster the emergence of
-                                        new and existing values-based communities by helping them recognize and reward
-                                        those that further their goals. We're starting with NFTs earned from involvement
-                                        gathered from on and off-chain activities and will expand into more expressive
-                                        mediums like inventory and avatars.
-                                        <br />
-                                        <br />
-                                        Each of us was created on earth without our own consent - we didn't hit start,
-                                        and we can't press pause. But we can decide why, how, and where we play.
-                                    </Text>
-                                </Box>
-                                <Image src={`/static/assets/exampleLogbook.svg`} alt="Example logbook" />
-                            </Box>
+                            {!isMobile ? <PlusBorder contentContainer={contentContainer} /> : null}
                         </Box>
-                        {!isMobile ? <PlusBorder contentContainer={contentContainer} /> : null}
-                    </Box>
-                    <LgbkLayer show={showMetabotModal} close={() => setShowMetabotModal(false)}>
-                        <Text textAlign="center">
-                            Looks like your ENS isn't on the allowlist yet. Send your ENS to our Telegram bot, Metabot,
-                            and they'll get you on there!
-                        </Text>
-                        <Image src="/metabot_small.png" alt="Metabot Head" height="84px" />
-                        <Button
-                            size="medium"
-                            secondary
-                            label="DM Metabot"
-                            margin="6px"
-                            href="https://t.me/the_meta_bot"
-                            target="_blank"
-                        />
-                    </LgbkLayer>
-                    <LgbkLayer show={showProcessingModal} close={() => setShowProcessingModal(false)}>
-                        <Text textAlign="center">
-                            Your on-chain data is being retrieved and processed by evm-translator. Metabot will send you
-                            a DM when it's ready! <br />
-                            <br />
-                            {/* In the meantime, you can check out more about evm-translator
+                        <LgbkLayer show={showMetabotModal} close={() => setShowMetabotModal(false)}>
+                            <Text textAlign="center">
+                                Looks like your ENS isn't on the allowlist yet. Send your ENS to our Telegram bot,
+                                Metabot, and they'll get you on there!
+                            </Text>
+                            <Image src="/metabot_small.png" alt="Metabot Head" height="84px" />
+                            <Button
+                                size="medium"
+                                secondary
+                                label="DM Metabot"
+                                margin="6px"
+                                href="https://t.me/the_meta_bot"
+                                target="_blank"
+                            />
+                        </LgbkLayer>
+                        <LgbkLayer show={showProcessingModal} close={() => setShowProcessingModal(false)}>
+                            <Text textAlign="center">
+                                Your on-chain data is being retrieved and processed by evm-translator. Metabot will send
+                                you a DM when it's ready! <br />
+                                <br />
+                                {/* In the meantime, you can check out more about evm-translator
                                         <a href="https://evm-translator.xyz/contribute" target="_blank">
                                             here
                                         </a> */}
-                            There are $5,000 worth of bounties available to help improve evm-translator.
-                        </Text>
-                        <Button
-                            size="medium"
-                            secondary
-                            label="Go Bounty Hunting"
-                            margin="12px"
-                            href="https://evm-translator.xyz/contribute"
-                            target="_blank"
-                        />
-                    </LgbkLayer>
+                                There are $5,000 worth of bounties available to help improve evm-translator.
+                            </Text>
+                            <Button
+                                size="medium"
+                                secondary
+                                label="Go Bounty Hunting"
+                                margin="12px"
+                                href="https://evm-translator.xyz/contribute"
+                                target="_blank"
+                            />
+                        </LgbkLayer>
+                        <LgbkLayer show={showMintedModal} close={() => setShowMintedModal(false)}>
+                            <Text textAlign="center">Congrats! You&apos;ve successfully minted your Logbook.</Text>
+                            <Button primary label="See your Logbook" href={`/logbook/${userTokenId}`} target="_blank" />
+                        </LgbkLayer>
+                    </Box>
                 </Box>
             </Stack>
         </>

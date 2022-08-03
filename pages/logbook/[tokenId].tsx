@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { useContext, useEffect, useState } from 'react'
 
 // import Image from 'next/image'
-import { Box, Button, Image, ResponsiveContext, Stack } from 'grommet'
+import { Anchor, Box, Button, Card, CardBody, Image, ResponsiveContext, Stack, Text } from 'grommet'
 
 import { LOGBOOK_CONTRACT_ADDRESS } from 'utils/constants'
 import { clickableIPFSLink } from 'utils/frontend'
@@ -66,7 +66,7 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
         <Stack fill="horizontal" className="main-stack">
             <Box height="100vh" className="zoom" justify="center" background="backgroundDark" />
 
-            <Box pad={isMobile ? 'none' : 'medium'} overflow="hidden" fill>
+            <Box pad={isMobile ? 'none' : 'medium'}>
                 <Box
                     background="backgroundLight"
                     round={isMobile ? 'none' : 'small'}
@@ -74,28 +74,10 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
                     direction="row"
                     gap="large"
                     flex
+                    style={{ minHeight: '100vh' }}
                 >
                     <PlusBorder contentContainer={contentContainer} />
                     <Box margin="small" fill gap="large" className="content-container">
-                        <Image src="/static/assets/logbookLogo.svg" alt="Logbook Logo" />
-                        <Box
-                            direction="row"
-                            gap="medium"
-                            fill="horizontal"
-                            justify="center"
-                            style={{ minHeight: 'auto' }}
-                        >
-                            <Button
-                                secondary
-                                label="View on OpenSea"
-                                onClick={() => window.open(getOpenSeaUrl(tokenId.toString()))}
-                            />
-                            <Button
-                                secondary
-                                label={downloadPending ? `Downloading...` : `Download`}
-                                onClick={() => downloadPngFromUrl()}
-                            />
-                        </Box>
                         <Box>
                             <Head>
                                 <title>{name}</title>
@@ -107,12 +89,38 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
                                 <meta name="twitter:image" content={clickableIPFSLink(image)} />
                                 <meta name="twitter:image:alt" content={name} />
                             </Head>
-                            <Image src={clickableIPFSLink(image)} alt={name} height="100%" />
+                            <Box border={{ color: 'backgroundDark', size: 'small' }}>
+                                <Image src={clickableIPFSLink(image)} alt={name} height="100%" />
+                            </Box>
                         </Box>
-                        <Box>
-                            Now that you’ve minted your Logbook, you have access to $5,000 USDC worth of bounties to
-                            help better interpret on-chain activity. Check out our Contributor docs here.
+                        <Box direction={isMobile ? 'column' : 'row'} gap="medium" fill="horizontal" justify="center">
+                            <Button
+                                secondary
+                                label="View on OpenSea"
+                                onClick={() => window.open(getOpenSeaUrl(tokenId.toString()))}
+                            />
+                            <Button
+                                secondary
+                                label={downloadPending ? `Downloading...` : `Download`}
+                                onClick={() => downloadPngFromUrl()}
+                            />
                         </Box>
+                        <Card pad="medium" background="#d1d1d1">
+                            <CardBody gap="medium">
+                                <Text textAlign="center" weight="bold">
+                                    Now that you’ve minted your Logbook, you have access to $5,000 USDC worth of
+                                    bounties to help better interpret on-chain activity. Check out our Contributor docs!
+                                </Text>
+                                <Box>
+                                    <Button
+                                        primary
+                                        label="Contribute"
+                                        target="_blank"
+                                        href="https://github.com/metagame-xyz/evm-translator/blob/main/CONTRIBUTE.md"
+                                    />
+                                </Box>
+                            </CardBody>
+                        </Card>
                     </Box>
                     <PlusBorder contentContainer={contentContainer} />
                 </Box>

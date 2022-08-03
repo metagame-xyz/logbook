@@ -5,10 +5,10 @@ import { Button } from 'grommet'
 export const enum MintStatus {
     unknown = 'unknown',
     loading = 'loading',
-    can_mint = 'Mint',
+    can_mint = 'Mint for 0.02 ETH',
     minting = 'Minting...',
     minted = 'Minted',
-    metabot = 'DM Metabot',
+    metabot = 'Get whitelisted',
     processing = 'Processing...',
 }
 

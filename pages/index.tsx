@@ -262,12 +262,17 @@ const Home = () => {
             mintButtonAction = () => setShowProcessingModal(true)
             break
         case MintStatus.minted:
+            mintButtonAction = () => {
+                window.open(`/logbook/${userTokenId}`, '_blank')
+            }
         case MintStatus.unknown:
         default:
             break
     }
 
-    const clickable = [MintStatus.can_mint, MintStatus.metabot, MintStatus.processing].includes(mintStatus)
+    const clickable = [MintStatus.can_mint, MintStatus.metabot, MintStatus.processing, MintStatus.minted].includes(
+        mintStatus,
+    )
 
     return (
         <>
@@ -328,14 +333,6 @@ const Home = () => {
                                                 clickable={clickable}
                                                 action={mintButtonAction}
                                             />
-                                        )}
-                                        {mintStatus === MintStatus.minted && (
-                                            <Button
-                                                alignSelf="center"
-                                                secondary
-                                                label={`See your Logbook`}
-                                                href={`/logbook/${userTokenId}`}
-                                            /> // TODO this should
                                         )}
                                     </Box>
                                 </Box>

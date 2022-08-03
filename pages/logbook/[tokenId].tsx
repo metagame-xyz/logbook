@@ -29,6 +29,7 @@ export const getServerSideProps = async (context) => {
 
 function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [contentContainer, setContentContainer] = useState<HTMLElement | null>(null)
+    const [downloadPending, setDownloadPending] = useState(false)
     const isMobile = useContext(ResponsiveContext) === 'small'
     const { name, tokenId, image, description } = metadata
 
@@ -37,7 +38,6 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
     const getOpenSeaUrl = (tokenId: string) => {
         return `https://opensea.io/assets/${LOGBOOK_CONTRACT_ADDRESS}/${tokenId}`
     }
-    const size = ['80vw']
 
     useEffect(() => {
         const contentLayerElement = document.querySelector('.main-stack').children[1] as HTMLElement
@@ -46,9 +46,8 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
         setContentContainer(document.querySelector('.content-container') as HTMLElement)
     }, [])
 
-    const tokenIdStr = tokenId.toString()
-    console.log('tokenIdStr', tokenIdStr)
     async function downloadPngFromUrl() {
+        setDownloadPending(true)
         const { pngUrl } = await fetch(
             `/api/screenshot?tokenId=${tokenId}&width=${width * 2}&height=${height * 2}`,
         ).then((res) => res.json())
@@ -58,8 +57,9 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
 
         const a = document.createElement('a')
         a.href = fileUrl
-        a.download = `${tokenIdStr}.png`
+        a.download = `${name}.png`
         a.click()
+        setDownloadPending(false)
     }
 
     return (
@@ -90,7 +90,11 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
                                 label="View on OpenSea"
                                 onClick={() => window.open(getOpenSeaUrl(tokenId.toString()))}
                             />
-                            <Button secondary label="Download" onClick={() => downloadPngFromUrl()} />
+                            <Button
+                                secondary
+                                label={downloadPending ? `Downloading...` : `Download`}
+                                onClick={() => downloadPngFromUrl()}
+                            />
                         </Box>
                         <Box>
                             <Head>
@@ -104,6 +108,10 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
                                 <meta name="twitter:image:alt" content={name} />
                             </Head>
                             <Image src={clickableIPFSLink(image)} alt={name} height="100%" />
+                        </Box>
+                        <Box>
+                            Now that you’ve minted your Logbook, you have access to $5,000 USDC worth of bounties to
+                            help better interpret on-chain activity. Check out our Contributor docs here.
                         </Box>
                     </Box>
                     <PlusBorder contentContainer={contentContainer} />

@@ -294,7 +294,7 @@ function Home({}) {
                 {/* <Lottie options={options} width="fit-content" /> */}
             </Box>
             <Box>
-                <Box style={{ opacity: '0.5', height: `${isMobile ? '80' : '92'}vh` }} />
+                <Box style={{ height: `${isMobile ? '80' : '92'}vh` }} />
                 <Box pad={isMobile ? 'none' : { horizontal: 'medium', top: 'medium', bottom: 'none' }}>
                     <Box
                         background="backgroundLight"

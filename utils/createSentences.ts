@@ -327,8 +327,8 @@ export default function createSentences(interpretedData: (Interpretation | null)
     }
 
     // RECEIVED
-    const specialReceived = data.received.all().filter((tx) => tx.fromName)
-    const genericReceived = data.received.all().filter((tx) => !tx.fromName)
+    const specialReceived = data.received?.all().filter((tx) => tx.fromName) || []
+    const genericReceived = data.received?.all().filter((tx) => !tx.fromName) || []
     const receivedSentences = []
 
     if (specialReceived.length > 0) {

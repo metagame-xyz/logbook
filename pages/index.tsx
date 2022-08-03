@@ -50,8 +50,6 @@ function Home({}) {
 
     const { View, animationLoaded } = useLottie(options)
 
-    // console.log('loaded', animationLoaded)
-
     useEffect(() => {
         if (address) {
             datadogRum.setUser({
@@ -83,7 +81,6 @@ function Home({}) {
     //     cantMintReason = `You're on the allowlist but the Enigma Machine hasn't finished processing your data`
 
     const isMobile = useContext(ResponsiveContext) === 'small'
-    console.log('ismobile', isMobile)
 
     useEffect(() => {
         const contentLayerElement = document.querySelector('.main-stack').children[1] as HTMLElement
@@ -97,7 +94,6 @@ function Home({}) {
         const BASE_ZOOM = isMobile ? 1.25 : 0.8
 
         zoomElement.style.transform = `scale(${BASE_ZOOM})`
-        console.log('scale', BASE_ZOOM)
 
         let zoom = BASE_ZOOM
         const ZOOM_SPEED = isMobile ? 0.2 : 0.05

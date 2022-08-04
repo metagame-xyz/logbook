@@ -1806,6 +1806,16 @@
     "@gnosis.pm/safe-deployments" "1.15.0"
     web3-core "^1.7.1"
 
+"@gnosis.pm/safe-core-sdk-types@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-core-sdk-types/-/safe-core-sdk-types-1.4.0.tgz#c6615333177765b58f03cd77e165d4d36b9d2c91"
+  integrity sha512-v+V6wqfFVgBl2sZ8FqCMwL/qFnr6wBCcJ/gllo4OvItYw/dmXlMCkxUrERoILSeHDezLkrWnnzA4tHfkEwYuwg==
+  dependencies:
+    "@ethersproject/bignumber" "^5.6.0"
+    "@ethersproject/contracts" "^5.6.0"
+    "@gnosis.pm/safe-deployments" "1.15.0"
+    web3-core "^1.7.1"
+
 "@gnosis.pm/safe-core-sdk-utils@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-core-sdk-utils/-/safe-core-sdk-utils-1.2.1.tgz#1cc9de8187e724c02104a8c15c14fb77796d1240"
@@ -1822,15 +1832,15 @@
   dependencies:
     semver "^7.3.7"
 
-"@gnosis.pm/safe-ethers-lib@^1.1.0":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-ethers-lib/-/safe-ethers-lib-1.2.1.tgz#d429480f187c6897fb9fcbfd7a526e3d422e6735"
-  integrity sha512-7A9t2fQW5VtfHVs++Fc5G+a45C/TO4/Tb0MB0G7eYfrrf/rnKZBsUaPIEm4J1ny5WMjGQv2f5DjA3hgaRL9VhA==
+"@gnosis.pm/safe-ethers-lib@^1.2.1":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-ethers-lib/-/safe-ethers-lib-1.4.0.tgz#5d884c8c083c811f753a2602fba3decf73b3a5f9"
+  integrity sha512-ImKNocwoJB19g9nEcorLG1FuYQZyK+llcCIShSw0R7f3OHi30gjcQJek/rJv+wKetM66s7Dz26xtb2X9ARN3Gg==
   dependencies:
-    "@gnosis.pm/safe-core-sdk-types" "^1.2.1"
+    "@gnosis.pm/safe-core-sdk-types" "^1.4.0"
     "@gnosis.pm/safe-core-sdk-utils" "^1.2.1"
 
-"@gnosis.pm/safe-service-client@^1.1.2":
+"@gnosis.pm/safe-service-client@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-service-client/-/safe-service-client-1.2.0.tgz#7dc4a5d7fb85a1628fb910140127712f05f8f54f"
   integrity sha512-KAgnSgviYuMDYP/GETi5AxJTq/196qf+TXdXD5P136btPQo9XQta63IumpXY8+EQTZPJGmL8vSInXEUySy9SAA==
@@ -5457,14 +5467,14 @@ events@^3.0.0, events@^3.3.0:
   resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
   integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
 
-evm-translator@^0.2.51:
-  version "0.2.51"
-  resolved "https://registry.yarnpkg.com/evm-translator/-/evm-translator-0.2.51.tgz#2716d7882c9d0d99e76b314b7ba999c0d70a9af1"
-  integrity sha512-+dEygjuwN3LVuG5iBZzTQ5JlPv+wNPoBJwRBJjqRUo4rMSZc2alxmE5/BTuLqE6yQ2M4EeVWewtdgsLOjreN1A==
+evm-translator@^0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/evm-translator/-/evm-translator-0.3.5.tgz#bec8ba71d63943afd4965d4ba33fd0f75ba23c26"
+  integrity sha512-q+Q1OGsZ3SG+pfwHKcR8brWHlICBTnZPTqwUSLwI771PvqJP3JrCYW9rfMihdPqapl/9FKdd5EWemOjIwg2wvA==
   dependencies:
     "@alch/alchemy-sdk" "^1.0.3"
-    "@gnosis.pm/safe-ethers-lib" "^1.1.0"
-    "@gnosis.pm/safe-service-client" "^1.1.2"
+    "@gnosis.pm/safe-ethers-lib" "^1.2.1"
+    "@gnosis.pm/safe-service-client" "^1.2.0"
     axios "^0.26.1"
     bottleneck "^2.19.5"
     collect.js "^4.32.0"
@@ -5474,6 +5484,7 @@ evm-translator@^0.2.51:
     limiter "^2.1.0"
     mongoose "^6.3.4"
     node-fetch "2.6.6"
+    onoma "^0.1.1"
     require-context "^1.1.0"
     traverse "^0.6.6"
     winston "^3.7.2"

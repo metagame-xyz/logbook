@@ -12,7 +12,7 @@ export const enum MintStatus {
     processing = 'Processing...',
 }
 
-const MintButton = ({ mintStatus, clickable, action }) => {
+const MintButton = ({ mintStatus, clickable, action = (a) => a }) => {
     const [actionLabel, setActionLabel] = useState<string>(mintStatus)
 
     useEffect(() => {

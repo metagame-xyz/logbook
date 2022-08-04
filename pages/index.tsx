@@ -397,6 +397,7 @@ const Home = () => {
                                         </a> */}
                                 There are $5,000 worth of bounties available to help improve evm-translator.
                             </Text>
+                            <Image src="/metabot_small.png" alt="Metabot Head" height="84px" />
                             <Button
                                 size="medium"
                                 secondary
@@ -408,6 +409,7 @@ const Home = () => {
                         </LgbkLayer>
                         <LgbkLayer show={showMintedModal} close={() => setShowMintedModal(false)}>
                             <Text textAlign="center">Congrats! You&apos;ve successfully minted your Logbook.</Text>
+                            <Image src="/metabot_small.png" alt="Metabot Head" height="84px" />
                             <Button primary label="See your Logbook" href={`/logbook/${userTokenId}`} target="_blank" />
                         </LgbkLayer>
                     </Box>

@@ -28,7 +28,7 @@
         "datadog-winston": "^1.5.1",
         "dotenv": "^16.0.1",
         "ethers": "^5.5.1",
-        "evm-translator": "^0.2.51",
+        "evm-translator": "^0.3.5",
         "framer-motion": "^4",
         "grommet": "^2.25.1",
         "ioredis": "^4.27.9",

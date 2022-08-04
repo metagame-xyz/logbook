@@ -47,9 +47,10 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
 
         timer.startTimer('getTxHashFromDB')
         const decodedTx = await translator.getManyDecodedTxFromDB(user.txHashList)
+        // const decodedTx = await translator.databaseInterface.getManyDecodedByAddress(address)
         timer.stopTimer('getTxHashFromDB')
 
-        console.log('got decodedTx')
+        console.log('got decodedTx', decodedTx.length)
 
         timer.startTimer('interpretTxArr')
         const interpretedData = await translator.interpretDecodedTxArr(decodedTx, address)

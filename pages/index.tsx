@@ -408,6 +408,7 @@ const Home = () => {
                             />
                         </LgbkLayer>
                         <LgbkLayer show={showMintedModal} close={() => setShowMintedModal(false)}>
+                            <Image src={`/static/assets/congratsAscii.svg`} alt="Congrats ASCII" width="100%" />
                             <Text textAlign="center">Congrats! You&apos;ve successfully minted your Logbook.</Text>
                             <Image src="/metabot_small.png" alt="Metabot Head" height="84px" />
                             <Button primary label="See your Logbook" href={`/logbook/${userTokenId}`} target="_blank" />

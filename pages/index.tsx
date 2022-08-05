@@ -362,6 +362,12 @@ const Home = () => {
                                             start, and we can't press pause. But we can decide why, how, and where we
                                             play.
                                         </Text>
+                                        <Button
+                                            secondary
+                                            label="See Metagame's other NFTs"
+                                            href="https://www.themetagame.xyz/"
+                                            target="_blank"
+                                        />
                                     </Box>
                                     <Image src={`/static/assets/exampleLogbook.svg`} alt="Example logbook" />
                                 </Box>

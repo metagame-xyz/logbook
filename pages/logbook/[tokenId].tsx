@@ -117,6 +117,12 @@ function LogbookPage({ metadata }: InferGetServerSidePropsType<typeof getServerS
                                     label={downloadPending ? `Downloading...` : `Download`}
                                     onClick={() => downloadPngFromUrl()}
                                 />
+                                <Button
+                                    secondary
+                                    label="See Metagame's other NFTs"
+                                    href="https://www.themetagame.xyz/"
+                                    target="_blank"
+                                />
                             </Box>
                             <Card pad="medium" background="#d1d1d1">
                                 <CardBody gap="medium">

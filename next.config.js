@@ -2,7 +2,7 @@ module.exports = {
     reactStrictMode: true,
     images: {
         dangerouslyAllowSVG: true,
-        domains: ['ipfs.infura.io'],
+        domains: ['logbook.infura-ipfs.io'],
     },
     webpack: (config, options) => {
         if (!options.isServer) {

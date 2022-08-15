@@ -34,7 +34,7 @@ export function createIPFSClient(INFURA_IPFS_PROJECT_ID: string, INFURA_IPFS_SEC
     const auth = 'Basic ' + Buffer.from(INFURA_IPFS_PROJECT_ID + ':' + INFURA_IPFS_SECRET).toString('base64')
 
     const client = create({
-        host: 'ipfs.infura.io',
+        host: 'logbook.infura-ipfs.io',
         port: 5001,
         protocol: 'https',
         headers: {
@@ -45,7 +45,7 @@ export function createIPFSClient(INFURA_IPFS_PROJECT_ID: string, INFURA_IPFS_SEC
     return client
 }
 
-const gatewayURL = 'https://ipfs.infura.io/ipfs/'
+const gatewayURL = 'https://logbook.infura-ipfs.io/ipfs/'
 const ipfsScheme = 'ipfs://'
 export const ipfsUrlToCIDString = (url: string): string => {
     return url.replace(ipfsScheme, '')
